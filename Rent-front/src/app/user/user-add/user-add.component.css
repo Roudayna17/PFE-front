@@ -1,0 +1,100 @@
+/* stepper.component.css */
+
+/* Base stepper item styling */
+.size-7 {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem; /* Font size for text */
+  font-weight: 500; /* Font weight for text */
+  border-radius: 9999px; /* Full rounding */
+}
+
+.size-3 {
+  width: 12px;
+  height: 12px;
+}
+
+/* Active step */
+.hs-stepper-active {
+  background-color: #2563eb; /* Tailwind's blue-600 */
+  color: white;
+}
+
+/* Successful step */
+.hs-stepper-success {
+  background-color: #2563eb; /* Tailwind's teal-500 */
+  color: white;
+}
+
+/* Completed step */
+.hs-stepper-completed {
+  background-color: #2563eb; /* Tailwind's green-600 */
+  color: white;
+}
+
+/* Hide success and completed icons by default */
+.hs-stepper-success svg,
+.hs-stepper-completed svg {
+  display: none;
+}
+
+/* Show success and completed icons when active */
+.hs-stepper-success.active svg,
+.hs-stepper-completed.active svg {
+  display: block;
+}
+
+/* Hide number when step is success or completed */
+.hs-stepper-success.active .hs-stepper-completed.hidden,
+.hs-stepper-completed.active .hs-stepper-success.hidden {
+  display: none;
+}
+
+/* Additional styles for content boxes and buttons */
+.p-4.h-48.bg-gray-50 {
+  padding: 16px;
+  height: 192px;
+  background-color: #f9fafb; /* Tailwind's gray-50 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #e5e7eb; /* Tailwind's gray-200 */
+  border-radius: 1rem; /* Tailwind's rounded-xl */
+}
+
+.text-gray-500 {
+  color: #6b7280; /* Tailwind's gray-500 */
+}
+
+button {
+  padding: 8px 12px;
+  font-size: 0.875rem; /* Text-sm */
+  font-weight: 500;
+  border-radius: 0.5rem; /* Rounded-lg */
+  border: 1px solid transparent;
+}
+
+button[data-hs-stepper-back-btn] {
+  border-color: #e5e7eb; /* Tailwind's gray-200 */
+  background-color: white;
+  color: #1f2937; /* Tailwind's gray-800 */
+}
+
+button[data-hs-stepper-next-btn] {
+  background-color: #1dd865; /* Tailwind's blue-600 */
+  color: white;
+}
+
+button[data-hs-stepper-next-btn]:hover,
+button[data-hs-stepper-finish-btn]:hover,
+button[data-hs-stepper-reset-btn]:hover {
+  background-color: #1dd865; /* Tailwind's blue-700 */
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

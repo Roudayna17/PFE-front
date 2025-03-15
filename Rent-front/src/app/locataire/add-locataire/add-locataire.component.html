@@ -1,0 +1,142 @@
+<!-- Stepper Component -->
+<div id="hs-stepper-to-destroy" data-hs-stepper="">
+
+  <!-- Stepper Navigation -->
+  <ul class="relative flex flex-row gap-x-2">
+    <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" *ngFor="let step of [1, 2, 3]; let i = index">
+      <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
+        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full"
+          [class.hs-stepper-active]="currentStep === step"
+          [class.hs-stepper-success]="isStepSuccess(step)"
+          [class.hs-stepper-completed]="isStepCompleted(step)">
+          <span class="hs-stepper-success:hidden hs-stepper-completed:hidden">{{ step }}</span>
+          <svg class="hidden shrink-0 size-3 hs-stepper-success:block" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </span>
+        <span class="ms-2 text-sm font-medium text-gray-800">Étape {{ step }}</span>
+      </span>
+      <div class="w-full h-px flex-1 bg-gray-200 group-last:hidden"
+        [class.hs-stepper-success]="isStepSuccess(step)"
+        [class.hs-stepper-completed]="isStepCompleted(step)">
+      </div>
+    </li>
+  </ul>
+  <!-- End Stepper Navigation -->
+
+  <!-- Stepper Content -->
+  <div class="mt-5 sm:mt-8 p-5 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
+    <div *ngIf="showError" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+      <span class="font-medium">Danger alert!</span> {{msg}}.
+    </div>
+    <div *ngIf="show" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+      <span class="font-medium">Success alert!</span> {{msg}}
+    </div>
+    <form [formGroup]="locataireForm">
+
+      <!-- Step 1: Personal Info -->
+      <div *ngIf="currentStep === 1" formGroupName="personalInfo">
+        <div class="p-4 rounded-xl">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Informations Personnelles</h2>
+          
+          <div class="mb-4">
+            <label for="firstname" class="block text-sm font-medium text-gray-900">Nom:</label>
+            <input id="firstname" type="text" formControlName="firstname"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="mb-4">
+            <label for="lastName" class="block text-sm font-medium text-gray-900">Prénom:</label>
+            <input id="lastName" type="text" formControlName="lastName"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="mb-4">
+            <label for="telephone" class="block text-sm font-medium text-gray-900">Numéro de téléphone:</label>
+            <input id="telephone" type="text" formControlName="telephone"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+        </div>
+      </div>
+      <!-- End Step 1 -->
+
+      <!-- Step 2: Account Info -->
+      <div *ngIf="currentStep === 2" formGroupName="emailcontact">
+        <div class="p-4 rounded-xl">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Informations de Connexion</h2>
+
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-900">Email:</label>
+            <input id="email" type="email" formControlName="email"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="mb-4">
+            <label for="password" class="block text-sm font-medium text-gray-900">Mot de passe:</label>
+            <input id="password" type="password" formControlName="password"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="mb-4">
+            <label for="confirmPassword" class="block text-sm font-medium text-gray-900">Confirmer Mot de passe:</label>
+            <input id="confirmPassword" type="password" formControlName="confirmPassword"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+        </div>
+      </div>
+      <!-- End Step 2 -->
+
+      <!-- Step 3: Address -->
+      <div *ngIf="currentStep === 3" formGroupName="address">
+        <div class="p-4 rounded-xl">
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Adresse</h2>
+
+          <div class="mb-4">
+            <label for="region" class="block text-sm font-medium text-gray-900">Région:</label>
+            <input id="region" type="text" formControlName="region"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="mb-4">
+            <label for="ville" class="block text-sm font-medium text-gray-900">Ville:</label>
+            <input id="ville" type="text" formControlName="ville"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div class="mb-4">
+            <label for="codePostal" class="block text-sm font-medium text-gray-900">Code Postal:</label>
+            <input id="codePostal" type="text" formControlName="codePostal"
+              class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+         
+        </div>
+      </div>
+      <!-- End Step 3 -->
+
+      <!-- Navigation Buttons -->
+      <div class="mt-5 flex justify-between">
+        <button type="button"
+          class="py-2 px-4 bg-gray-200 rounded-lg hover:bg-gray-300"
+          [disabled]="currentStep === 1" (click)="goToPreviousStep()">
+          Précédent
+        </button>
+
+        <button *ngIf="!show" type="button"  [disabled]="locataireForm.get('personalInfo')?.invalid && currentStep==1  || locataireForm.get('emailcontact')?.invalid  && currentStep==2|| locataireForm.get('address')?.invalid && currentStep==3"
+          class="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          (click)="currentStep === 3 ?   Onsubmit(): goToNextStep()">
+          {{ currentStep === 3 ? 'Enregistrer' : 'Suivant' }}
+        </button>
+        <button *ngIf="show" (click)="back()" type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Retour</button>
+
+      </div>
+      <!-- End Navigation Buttons -->
+
+    </form>
+  </div>
+  <!-- End Stepper Content -->
+
+</div>
+<!-- End Stepper Component -->

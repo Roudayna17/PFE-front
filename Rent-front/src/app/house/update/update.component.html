@@ -1,0 +1,100 @@
+<!-- House Form -->
+<div class="p-5 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
+    <form [formGroup]="houseForm">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">House Information</h2>
+  
+      <div class="mb-4">
+        <label for="title" class="block text-sm font-medium text-gray-900">Title:</label>
+        <input id="title" type="text" formControlName="title" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      </div>
+  
+      <div class="mb-4">
+        <label for="description" class="block text-sm font-medium text-gray-900">Description:</label>
+        <textarea id="description" formControlName="description" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+      </div>
+  
+      <div class="mb-4">
+        <label for="location" class="block text-sm font-medium text-gray-900">Location:</label>
+        <input id="location" type="text" formControlName="location" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      </div>
+  
+      <div class="mb-4">
+        <label for="city" class="block text-sm font-medium text-gray-900">City:</label>
+        <input id="city" type="text" formControlName="city" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      </div>
+  
+      <div class="mb-4">
+        <label for="poste_code" class="block text-sm font-medium text-gray-900">Postal Code:</label>
+        <input id="poste_code" type="text" formControlName="poste_code" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      </div>
+  
+      <div class="mb-4">
+        <label for="price" class="block text-sm font-medium text-gray-900">Price:</label>
+        <input id="price" type="number" formControlName="price" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      </div>
+  
+      <div class="mb-4">
+        <label for="availability" class="block text-sm font-medium text-gray-900">Availability:</label>
+        <input id="availability" type="date" formControlName="availability" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      </div>
+      <div class="mb-4">        
+        <label class="block text-sm font-medium text-gray-900" for="characteristics">Choose Characteristics:</label>
+        <select  class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" (change)="onSelectEquipement($event)" id="characteristics" formControlName="characteristics" multiple>
+          <option *ngFor="let characteristic of characteristics" [value]="characteristic.id">
+            {{ characteristic.name }}
+          </option>
+        </select>
+      </div>
+       <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-900">Equipments:</label>
+            <select  class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" (change)="onSelectEquipement($event)" multiple>
+                <option *ngFor="let equipment of equipements; let i = index" [value]="equipment.id">
+                  {{ equipment.name }}
+                </option>
+              </select>
+      </div>
+       <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-900">Pictures:</label>
+        <input type="file" (change)="picked($event)" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" multiple>
+
+        <div *ngFor="let item of pictureArray ;let i=index" class="clr-col-12 clr-col-sm-3  clr-col-md-4  clr-col-lg-4  clr-col-xl-2   img">
+            <div class="card clickable" >
+              <div class="card-img container">
+                <div class="clr-row clr-justify-content-between">
+                  <div class="clr-col-4">
+                    <span class="label label-success" *ngIf="item.defaults == true">Principale</span>
+                  </div>
+                  <div class="clr-justify-content-end">
+                    <span>
+                      <button type="button" class="btn btn-icon btn-warning btn-sm delete-icon" aria-label="warning"
+                        (click)="deletePicAction(item)">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <img [src]="item.url">
+              </div>
+            </div>
+          </div>
+       </div>
+  
+     
+  
+      <!-- <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-900">Pictures:</label>
+        <div formArrayName="pictures">
+          <div *ngFor="let picture of houseForm.get('pictures')?.controls; let i = index">
+            <input [formControlName]="i" type="text" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 mb-2" placeholder="Picture URL">
+          </div>
+        </div>
+      </div> -->
+  
+      <div class="mt-5 flex justify-end">
+        <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- End House Form -->
+  
