@@ -1,0 +1,98 @@
+<div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Modifier l'équipement</h1>
+
+  <form class="space-y-4" (ngSubmit)="onSubmit()">
+    <!-- Champ Nom -->
+    <div>
+      <label for="title" class="block text-sm font-medium text-gray-700">Nom</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        [(ngModel)]="equipment.title"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        required
+      />
+    </div>
+
+    <!-- Champ Description -->
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        [(ngModel)]="equipment.description"
+        rows="3"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Aperçu de l'image actuelle -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Image actuelle</label>
+      <img
+        [src]="equipment.image"
+        alt="Image de l'équipement"
+        class="mt-2 w-32 h-32 object-cover rounded-md"
+      />
+    </div>
+
+    <!-- Aperçu de la nouvelle image -->
+    <div *ngIf="imagePreview">
+      <label class="block text-sm font-medium text-gray-700">Aperçu de la nouvelle image</label>
+      <img
+        [src]="imagePreview"
+        alt="Aperçu de la nouvelle image"
+        class="mt-2 w-32 h-32 object-cover rounded-md"
+      />
+    </div>
+
+    <!-- Champ Nouvelle icône -->
+    <div>
+      <label for="icon" class="block text-sm font-medium text-gray-700">Nouvelle icône</label>
+      <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+        <div class="space-y-1 text-center">
+          <svg
+            class="mx-auto h-12 w-12 text-gray-400"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 48 48"
+            aria-hidden="true"
+          >
+            <path
+              d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4H12m20 0v8m0-8v-4m0 4H12m20 0h8m-8 0h-4m4 0v-4m0 4h-4m4 0v-4m0 4h-4"
+            />
+          </svg>
+          <div class="flex text-sm text-gray-600">
+            <label
+              for="file-upload"
+              class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+            >
+              <span>Uploader un fichier</span>
+              <input
+                id="file-upload"
+                name="file-upload"
+                type="file"
+                (change)="onFileChange($event)"
+                class="sr-only"
+              />
+            </label>
+            <p class="pl-1">ou glisser-déposer</p>
+          </div>
+          <p class="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 10MB</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div>
+      <button
+        type="submit"
+        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Mettre à jour
+      </button>
+    </div>
+  </form>
+</div>

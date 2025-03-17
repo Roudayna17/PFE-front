@@ -1,0 +1,42 @@
+/* Fichier : src/assets/css/sweetalert-custom.css */
+
+/* Personnalisation de l’alerte */
+.swal2-popup {
+    border-radius: 10px !important;
+    padding: 20px !important;
+    font-family: 'Arial', sans-serif !important;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  /* Titre de l’alerte */
+  .swal2-title {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #333 !important;
+  }
+  
+  /* Bouton de confirmation */
+  .swal2-confirm {
+    background-color: #d33 !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+    transition: background 0.3s ease-in-out !important;
+  }
+  
+  .swal2-confirm:hover {
+    background-color: #b91c1c !important;
+  }
+  
+  /* Bouton d'annulation */
+  .swal2-cancel {
+    background-color: #e5e7eb !important;
+    color: #333 !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+  }
+  
+  .swal2-cancel:hover {
+    background-color: #d1d5db !important;
+  }
+  

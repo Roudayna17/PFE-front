@@ -1,0 +1,108 @@
+<div class="p-5 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
+  <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">House Information</h2>
+
+    <!-- Titre -->
+    <div class="mb-4">
+      <label for="title" class="block text-sm font-medium text-gray-900">Title:</label>
+      <input id="title" type="text" formControlName="title" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Description -->
+    <div class="mb-4">
+      <label for="description" class="block text-sm font-medium text-gray-900">Description:</label>
+      <textarea id="description" formControlName="description" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+    </div>
+
+    <!-- Localisation -->
+    <div class="mb-4">
+      <label for="location" class="block text-sm font-medium text-gray-900">Location:</label>
+      <input id="location" type="text" formControlName="location" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Ville -->
+    <div class="mb-4">
+      <label for="city" class="block text-sm font-medium text-gray-900">City:</label>
+      <input id="city" type="text" formControlName="city" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Code postal -->
+    <div class="mb-4">
+      <label for="poste_code" class="block text-sm font-medium text-gray-900">Postal Code:</label>
+      <input id="poste_code" type="text" formControlName="poste_code" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Prix -->
+    <div class="mb-4">
+      <label for="price" class="block text-sm font-medium text-gray-900">Price:</label>
+      <input id="price" type="number" formControlName="price" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Disponibilité -->
+    <div class="mb-4">
+      <label for="availability" class="block text-sm font-medium text-gray-900">Availability:</label>
+      <input id="availability" type="date" formControlName="availability" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <!-- Type de logement -->
+    <div class="mb-4">
+      <label for="type" class="block text-sm font-medium text-gray-900">Type:</label>
+      <select id="type" formControlName="type" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+        <option value="appartement">Appartement</option>
+        <option value="maison">Maison</option>
+      </select>
+    </div>
+
+    <!-- Caractéristiques -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-900">Characteristics:</label>
+      <div *ngFor="let characteristic of characteristics" class="flex items-center">
+        <input type="checkbox" [value]="characteristic.id" (change)="onSelectCharacteristic($event, characteristic.id)" class="mr-2">
+        <label>{{ characteristic.title }}</label>
+        <img [src]="characteristic.image" alt="{{ characteristic.title }}" class="w-10 h-10 ml-2">
+      </div>
+    </div>
+
+    <!-- Équipements -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-900">Equipments:</label>
+      <div *ngFor="let equipment of equipements" class="flex items-center">
+        <input type="checkbox" [value]="equipment.id" (change)="onSelectEquipement($event, equipment.id)" class="mr-2">
+        <label>{{ equipment.title }}</label>
+        <img [src]="equipment.image" alt="{{ equipment.title }}" class="w-10 h-10 ml-2">
+      </div>
+    </div>
+
+    <!-- Images -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-900">Pictures:</label>
+      <input type="file" (change)="picked($event)" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" multiple>
+
+      <div *ngFor="let item of pictureArray; let i = index" class="clr-col-12 clr-col-sm-3 clr-col-md-4 clr-col-lg-4 clr-col-xl-2 img">
+        <div class="card clickable">
+          <div class="card-img container">
+            <div class="clr-row clr-justify-content-between">
+              <div class="clr-col-4">
+                <span class="label label-success" *ngIf="item.defaults">Principale</span>
+              </div>
+              <div class="clr-justify-content-end">
+                <span>
+                  <button type="button" class="btn btn-icon btn-warning btn-sm delete-icon" aria-label="warning" (click)="deletePicAction(item)">
+                  </button>
+                </span>
+              </div>
+            </div>
+            <img [src]="item.url">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="mt-5 flex justify-end">
+      <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
