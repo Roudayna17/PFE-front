@@ -1,0 +1,87 @@
+<div class="container mx-auto p-6"> 
+    <h1 class="text-2xl font-bold mb-6">Liste des offres</h1>
+  
+    <div class="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3 mb-4">
+      <button
+        routerLink="/offre/add-offre"
+        type="button"
+        class="flex items-center gap-2 text-green-700 hover:text-white border border-green-700 hover:bg-green-800"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Ajouter
+      </button>
+  
+      <button
+        (click)="actionOpen()"
+        type="button"
+        class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z" />
+        </svg>
+        Supprimer
+      </button>
+  
+      <button
+        (click)="editRouter()"
+        type="button"
+        [disabled]="isButtonDisabled"
+        class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z" />
+        </svg>
+        Modifier
+      </button>
+    </div>
+  
+    <table class="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 border-b">
+            <input
+              type="checkbox"
+              [(ngModel)]="selectAll"
+              (change)="toggleSelectAll()"
+              class="w-4 h-4"
+            />
+          </th>
+          <th class="py-2 px-4 border-b">Titre</th>
+          <th class="py-2 px-4 border-b">Description</th>
+          <th class="py-2 px-4 border-b">Date de publication</th>
+          <th class="py-2 px-4 border-b">Heure de publication</th>
+          <th class="py-2 px-4 border-b">Adresse</th>
+          <th class="py-2 px-4 border-b">Disponibilité</th>
+          <th class="py-2 px-4 border-b">Prix TTC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let offre of offres" class="hover:bg-gray-50">
+          <td class="py-2 px-4 border-b">
+            <input
+              type="checkbox"
+              [(ngModel)]="offre.selected"
+              (change)="onCheckboxChange()"
+              class="w-4 h-4"
+            />
+          </td>
+          <td class="py-2 px-4 border-b">{{ offre.title }}</td>
+          <td class="py-2 px-4 border-b">{{ offre.description }}</td>
+          <td class="py-2 px-4 border-b">{{ offre.publicationDate }}</td>
+          <td class="py-2 px-4 border-b">{{ offre.publicationTime }}</td>
+          <td class="py-2 px-4 border-b">{{ offre.address }}</td>
+          <td class="py-2 px-4 border-b">{{ offre.availability }}</td>
+          <td class="py-2 px-4 border-b">{{ offre.priceTTC }}TND</td>
+        </tr>
+      </tbody>
+    </table>
+    <app-delete-offre *ngIf="close"
+    [selectedList]="selectedoffres"
+    (close)="actionClose()"
+    (save)="actionSave()">
+</app-delete-offre>
+  
+  </div>
+  

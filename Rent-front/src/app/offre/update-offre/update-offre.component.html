@@ -1,0 +1,71 @@
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Modifier une Offre</h2>
+  
+    <form [formGroup]="offreForm" (ngSubmit)="submitForm()">
+        <!-- Titre -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Titre</label>
+            <input type="text" formControlName="title" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+  
+        <!-- Description -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea formControlName="description" rows="3" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"></textarea>
+        </div>
+  
+        <!-- Date de publication -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Date de publication</label>
+            <input type="date" formControlName="publicationDate" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+  
+        <!-- Heure de publication -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Heure de publication</label>
+            <input type="time" formControlName="publicationTime" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+  
+        <!-- Adresse -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Adresse</label>
+            <input type="text" formControlName="address" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+  
+       <!-- Sélection Type d'immobilier -->
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700">Sélectionner le type d'immobilier</label>
+    <select formControlName="propertyType" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        <option value="appartement">Appartement</option>
+        <option value="maison">Maison</option>
+        <option value="villa">Villa</option>
+        <option value="studio">Studio</option>
+    </select>
+  </div>
+  
+  
+        <!-- Prix HT -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Prix Hors Taxes (HT)</label>
+            <input type="number" formControlName="priceHT" (input)="calculateTTC()" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+  
+        <!-- TVA (%) -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">TVA (%)</label>
+            <input type="number" formControlName="tva" (input)="calculateTTC()" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+  
+        <!-- Prix TTC -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Prix TTC</label>
+            <input type="text" formControlName="priceTTC" [disabled]="true" class="w-full p-2 border rounded-lg bg-gray-100">
+        </div>
+  
+        <!-- Bouton -->
+        <button type="submit" class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition">
+            Mettre à jour l'Offre
+        </button>
+    </form>
+  </div>
+  
