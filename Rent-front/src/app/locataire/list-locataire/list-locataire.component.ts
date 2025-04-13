@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocataireService } from '../locataire.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-locataire',
@@ -8,66 +9,95 @@ import { Router } from '@angular/router';
   styleUrls: ['./list-locataire.component.css']
 })
 export class ListLocataireComponent implements OnInit {
-  close: boolean=false;
-  count: number=0;
-  locataires: any[] = []; // Array to store locataires
-  selectAll: boolean = false; // Flag to track "select all" checkbox state
-  isButtonDisabled: boolean = true; // Disable buttons initially
+  close: boolean = false;
+  locataires: any[] = [];
+  filteredLocataires: any[] = [];
+  selectAll: boolean = false;
+  isButtonDisabled: boolean = true;
+  searchTerm: string = '';
 
-  constructor(private locataireService: LocataireService , private router:Router) { }
+  constructor(
+    private locataireService: LocataireService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.getListClient();
+    this.loadLocataires();
   }
- 
-  // Method to get list of locataires from the service
-  getListClient() {
-    this.locataireService.listClient().subscribe(data => {
-      this.locataires = data[0]; 
-      this.count=data[1] // Assuming the locataires are in the first array
+
+  loadLocataires() {
+    this.locataireService.listClient().subscribe({
+      next: (data) => {
+        this.locataires = data[0].map((locataire: any) => ({
+          ...locataire,
+          selected: false
+        }));
+        this.filteredLocataires = [...this.locataires];
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        Swal.fire('Erreur', 'Impossible de charger les locataires', 'error');
+      }
     });
   }
 
-  // Method to handle checkbox changes and update button status
+  filterLocataires() {
+    if (!this.searchTerm) {
+      this.filteredLocataires = [...this.locataires];
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredLocataires = this.locataires.filter(locataire => 
+      locataire.firstName?.toLowerCase().includes(term) ||
+      locataire.lastName?.toLowerCase().includes(term) ||
+      locataire.email?.toLowerCase().includes(term)
+    );
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.filterLocataires();
+  }
+
   onCheckboxChange() {
-    this.isButtonDisabled = this.selectedLocataires.length !== 1; // Button enabled only when one locataire is selected
+    this.isButtonDisabled = this.selectedLocataires.length !== 1;
+    this.selectAll = this.filteredLocataires.length > 0 && 
+                    this.filteredLocataires.every(l => l.selected);
   }
 
-  // Helper method to get the number of selected locataires
   get selectedLocataires() {
-    return this.locataires.filter(locataire => locataire.selected); // Filters locataires that are selected
+    return this.filteredLocataires.filter(l => l.selected);
   }
 
-  // Method to toggle the selection of all locataires
   toggleSelectAll() {
-    this.locataires.forEach(locataire => locataire.selected = this.selectAll);
-    this.onCheckboxChange();  // Update button state after toggling "select all"
+    const newState = !this.selectAll;
+    this.filteredLocataires.forEach(l => l.selected = newState);
+    this.onCheckboxChange();
   }
 
-  // Method to check if all locataires are selected, used to update "select all" checkbox
-  checkIfAllSelected() {
-    this.selectAll = this.locataires.every(locataire => locataire.selected);
+  actionOpen() {
+    if (this.selectedLocataires.length === 0) {
+      Swal.fire('Erreur', 'Veuillez sélectionner au moins un locataire', 'warning');
+      return;
+    }
+    this.close = true;
   }
 
-  // Method to update "select all" checkbox when a single locataire is selected or deselected
-  updateSelectAll() {
-    this.checkIfAllSelected();
+  actionClose() {
+    this.close = false;
   }
-  
-  actionClose(){
-    this.close=false
+
+  actionSave() {
+    this.close = false;
+    this.loadLocataires();
   }
-  actionSave(){
-    this.close=false
-    this.getListClient()
-  }
-  actionOpen(){
-    this.close=true
-    console.log("close", this.close)
-   
-  }
-  editRouter(){
-    let id=this.selectedLocataires[0].id
-    this.router.navigateByUrl("/locataire/update-locataire/"+String(id))
+
+  editRouter() {
+    if (this.selectedLocataires.length !== 1) {
+      Swal.fire('Erreur', 'Veuillez sélectionner un seul locataire à modifier', 'warning');
+      return;
+    }
+    this.router.navigate(['/locataire/update-locataire', this.selectedLocataires[0].id]);
   }
 }

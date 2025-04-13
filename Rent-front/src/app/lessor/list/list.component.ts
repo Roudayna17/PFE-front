@@ -1,74 +1,105 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LessorService } from '../lessor.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
-  styleUrl: './list.component.css'
+  styleUrls: ['./list.component.css']
 })
-export class ListComponent {
-    close: boolean=false;
-    count: number=0;
-    locataires: any[] = []; // Array to store locataires
-    selectAll: boolean = false; // Flag to track "select all" checkbox state
-    isButtonDisabled: boolean = true; // Disable buttons initially
-  
-    constructor(private lessorService: LessorService , private router:Router) { }
-  
-    ngOnInit(): void {
-      this.getListLessor();
-    }
-   
-    // Method to get list of locataires from the service
-    getListLessor() {
-      this.lessorService.getLessors().subscribe(data => {
-        this.locataires = data[0]; 
-        this.count=data[1] // Assuming the locataires are in the first array
-      });
-    }
-  
-    // Method to handle checkbox changes and update button status
-    onCheckboxChange() {
-      this.isButtonDisabled = this.selectedLessors.length !== 1; // Button enabled only when one locataire is selected
-    }
-  
-    // Helper method to get the number of selected locataires
-    get selectedLessors() {
-      return this.locataires.filter(locataire => locataire.selected); // Filters locataires that are selected
-    }
-  
-    // Method to toggle the selection of all locataires
-    toggleSelectAll() {
-      this.locataires.forEach(locataire => locataire.selected = this.selectAll);
-      this.onCheckboxChange();  // Update button state after toggling "select all"
-    }
-  
-    // Method to check if all locataires are selected, used to update "select all" checkbox
-    checkIfAllSelected() {
-      this.selectAll = this.locataires.every(locataire => locataire.selected);
-    }
-  
-    // Method to update "select all" checkbox when a single locataire is selected or deselected
-    updateSelectAll() {
-      this.checkIfAllSelected();
-    }
-    
-    actionClose(){
-      this.close=false
-    }
-    actionSave(){
-      this.close=false
-      this.getListLessor()
-    }
-    actionOpen(){
-      this.close=true
-      console.log("close", this.close)
-     
-    }
-    editRouter(){
-      let id=this.selectedLessors[0].id
-      this.router.navigateByUrl("/lessor/update/"+String(id))
+export class ListComponent implements OnInit {
+  close: boolean = false;
+  count: number = 0;
+  lessors: any[] = [];
+  filteredLessors: any[] = [];
+  selectAll: boolean = false;
+  isButtonDisabled: boolean = true;
+  searchTerm: string = '';
+
+  constructor(
+    private lessorService: LessorService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.loadLessors();
+  }
+
+  loadLessors() {
+    this.lessorService.getLessors().subscribe({
+      next: (data) => {
+        this.lessors = data[0].map((lessor: any) => ({
+          ...lessor,
+          selected: false
+        }));
+        this.filteredLessors = [...this.lessors];
+        this.count = data[1];
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        Swal.fire('Erreur', 'Impossible de charger les bailleurs', 'error');
+      }
+    });
+  }
+
+  filterLessors() {
+    if (!this.searchTerm) {
+      this.filteredLessors = [...this.lessors];
+      return;
     }
 
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredLessors = this.lessors.filter(lessor => 
+      lessor.firstName?.toLowerCase().includes(term) ||
+      lessor.lastName?.toLowerCase().includes(term) ||
+      lessor.email?.toLowerCase().includes(term)
+    );
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.filterLessors();
+  }
+
+  onCheckboxChange() {
+    this.isButtonDisabled = this.selectedLessors.length !== 1;
+    this.selectAll = this.filteredLessors.length > 0 && 
+                    this.filteredLessors.every(l => l.selected);
+  }
+
+  get selectedLessors() {
+    return this.filteredLessors.filter(l => l.selected);
+  }
+
+  toggleSelectAll() {
+    const newState = !this.selectAll;
+    this.filteredLessors.forEach(l => l.selected = newState);
+    this.onCheckboxChange();
+  }
+
+  actionOpen() {
+    if (this.selectedLessors.length === 0) {
+      Swal.fire('Erreur', 'Veuillez sélectionner au moins un bailleur', 'warning');
+      return;
+    }
+    this.close = true;
+  }
+
+  actionClose() {
+    this.close = false;
+  }
+
+  actionSave() {
+    this.close = false;
+    this.loadLessors();
+  }
+
+  editRouter() {
+    if (this.selectedLessors.length !== 1) {
+      Swal.fire('Erreur', 'Veuillez sélectionner un seul bailleur à modifier', 'warning');
+      return;
+    }
+    this.router.navigate(['/lessor/update', this.selectedLessors[0].id]);
+  }
 }

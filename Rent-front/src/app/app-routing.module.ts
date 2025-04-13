@@ -15,7 +15,9 @@ const routes: Routes = [{
     {path: 'house', loadChildren: () => import('./house/house.module').then(m => m.HouseModule)} ,
   {path: '', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)} ,
   {path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)} ,
-  {path: 'offre', loadChildren: () => import('./offre/offre.module').then(m => m.OffreModule)} 
+  {path: 'offre', loadChildren: () => import('./offre/offre.module').then(m => m.OffreModule)} ,
+  {path: 'notification', loadChildren: () => import('./notification/notification.module').then(m => m.NotificationModule)} ,
+
 
 ];
 

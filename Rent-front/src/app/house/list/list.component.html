@@ -1,103 +1,195 @@
 <div class="container mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">Liste des Maisons</h1>
-  
-    <!-- Add, Delete, Edit Buttons -->
-    <div class="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3 mb-4">
-      <!-- Add Button -->
-      <button
-        routerLink="/house/add"
-        type="button"
-        class="flex items-center gap-2 text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+  <!-- Barre de recherche améliorée -->
+  <div class="mb-10 px-4">
+    <div class="relative max-w-4xl mx-auto">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+        <svg class="w-5 h-5 text-blue-400 transition-all duration-300 group-focus-within:text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
         </svg>
-        Ajouter Maison
-      </button>
-  
-      <!-- Delete Button -->
-      <button
-        (click)="actionOpen()"
-        type="button"
-        class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z" />
-        </svg>
-        Supprimer
-      </button>
-  
-      <!-- Edit Button -->
-      <button
-        (click)="editRouter()"
-        type="button"
-        [disabled]="isButtonDisabled"
-        class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z" />
-        </svg>
-        Modifier
-      </button>
+      </div>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        (input)="filterHouses()"
+        class="block w-full py-3 pl-12 pr-5 text-base text-gray-800 placeholder-gray-400 bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-300 focus:ring-2 focus:ring-blue-300 focus:border-blue-500 hover:border-blue-300 focus:shadow-md outline-none"
+        placeholder="Rechercher par titre, bailleur, type ou localisation...">
     </div>
-  
-    <!-- Table of Houses -->
-    <table class="min-w-full bg-white border border-gray-300">
-      <thead>
-        <tr>
-          <!-- "Select All" Checkbox -->
-          <th class="py-2 px-4 border-b">
-            <div class="flex items-center">
-              <input
-                type="checkbox"
-                [(ngModel)]="selectedhouses"
-                (change)="toggleSelectAll()"
-                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label for="checkbox-all" class="sr-only">Sélectionner tout</label>
-            </div>
-          </th>
-          <th class="py-2 px-4 border-b">ID</th>
-          <th class="py-2 px-4 border-b">Titre</th>
-          <th class="py-2 px-4 border-b">Description</th>
-          <th class="py-2 px-4 border-b">type</th>
-
-          <th class="py-2 px-4 border-b">Prix</th>
-          <th class="py-2 px-4 border-b">Image</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let house of houses" class="hover:bg-gray-50">
-          <!-- Checkbox for Selecting a House -->
-          <td class="py-2 px-4 border-b">
-            <div class="flex items-center">
-              <input
-                type="checkbox"
-                (change)="onCheckboxChange()"
-                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label for="checkbox-table-search-1" class="sr-only">Sélectionner</label>
-            </div>
-          </td>
-          <td class="py-2 px-4 border-b">{{ house.id }}</td>
-          <td class="py-2 px-4 border-b">{{ house.title }}</td>
-          <td class="py-2 px-4 border-b">{{ house.description }}</td>
-          <td class="py-2 px-4 border-b">{{ house.type }}</td>
-
-          <td class="py-2 px-4 border-b">{{ house.price | currency }}</td>
-          <td class="py-2 px-4 border-b">
-            <img [src]="[house.pictures[0].url]" alt="Image" class="w-16 h-16 object-cover" />
-          </td>
-        </tr>
-      </tbody>
-      
-    </table>
-  
-    <!-- Delete House Component -->
-    <app-delete
-      *ngIf="close"
-      [selectedList]="selectedhouses"
-      (close)="actionClose()"
-      (save)="actionSave()"
-    ></app-delete>
   </div>
+
+  <h5 class="flex items-center gap-2">
+    <span class="text-2xl font-bold mb-6">Liste des logements publiés:</span>
+  </h5>
+
+  <!-- Boutons d'action -->
+  <div class="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3 mb-4">
+    <button routerLink="/house/add" type="button" class="flex items-center gap-2 text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Ajouter 
+    </button>
+    <button (click)="actionOpen()" type="button" class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z" />
+      </svg>
+      Supprimer
+    </button>
+    <button (click)="editRouter()" type="button" [disabled]="isButtonDisabled" class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z" />
+      </svg>
+      Modifier
+    </button>
+  </div>
+
+  <!-- Tableau des résultats -->
+  <table class="min-w-full bg-white border border-gray-300" *ngIf="filteredHouses.length > 0">
+    <thead>
+      <tr>
+        <th class="py-2 px-4 border-b">
+          <div class="flex items-center">
+            <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded">
+          </div>
+        </th>
+        <th class="py-2 px-4 border-b">Image</th>
+        <th class="py-2 px-4 border-b">Titre</th>
+        <th class="py-2 px-4 border-b">Description</th>
+        <th class="py-2 px-4 border-b">Nom de bailleur</th>
+        <th class="py-2 px-4 border-b">Type</th>
+        <th class="py-2 px-4 border-b">Prix</th>
+        <th class="py-2 px-4 border-b">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let house of filteredHouses" class="hover:bg-gray-50">
+        <td class="py-2 px-4 border-b">
+          <div class="flex items-center">
+            <input type="checkbox" [(ngModel)]="house.selected" (change)="onCheckboxChange()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded">
+          </div>
+        </td>
+        <td class="py-2 px-4 border-b">
+          <img *ngIf="house.pictures && house.pictures[0]" 
+               [src]="house.pictures[0].url" 
+               alt="Image" 
+               class="w-24 h-24 object-cover rounded-full border-2 border-gray-300" />
+          <span *ngIf="!house.pictures || !house.pictures[0]">Aucune image disponible</span>
+        </td>
+        <td class="py-2 px-4 border-b">{{ house.title }}</td>
+        <td class="py-2 px-4 border-b">{{ house.description }}</td>
+        <td class="py-2 px-4 border-b">
+          <span *ngIf="house.user" class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
+            {{ house.user.firstName }} {{ house.user.lastName }}
+          </span>
+          <span *ngIf="!house.user" class="bg-gray-100 text-gray-800 text-sm px-2.5 py-0.5 rounded-sm">
+            Disponible
+          </span>
+        </td>
+        <td class="py-2 px-4 border-b">{{ house.type }}</td>
+        <td class="py-2 px-4 border-b">{{ house.price }} TND</td>
+        <td class="py-2 px-4 border-b text-center w-20">
+          <div class="flex space-x-2 justify-center"> 
+            <button (click)="viewDetails(house)" 
+                    type="button" 
+                    class="text-yellow-500 hover:text-white hover:bg-yellow-500 p-2 rounded-full transition-colors"
+                    title="Voir détails">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+            <button (click)="goToAddOffer(house.id)" 
+                    type="button" 
+                    class="text-green-500 hover:text-white hover:bg-green-500 p-2 rounded-full transition-colors"
+                    title="Ajouter offre">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Message aucun résultat -->
+  <div *ngIf="searchTerm && filteredHouses.length === 0" class="mt-8 text-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">Aucun résultat trouvé</h3>
+    <p class="mt-2 text-gray-600">
+      Aucun logement ne correspond à votre recherche "<span class="font-semibold">{{searchTerm}}</span>"
+    </p>
+    <button 
+      (click)="clearSearch()"
+      class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+      Réinitialiser la recherche
+    </button>
+  </div>
+
+  <!-- Message liste vide -->
+  <div *ngIf="!searchTerm && filteredHouses.length === 0" class="mt-8 text-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">Aucun logement disponible</h3>
+    <p class="mt-2 text-gray-600">
+      Aucun logement n'est actuellement publié dans le système
+    </p>
+    <button 
+      routerLink="/house/add"
+      class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+      <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Ajouter un logement
+    </button>
+  </div>
+
+  <!-- Modal de détails -->
+  <div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 relative max-h-[90vh] overflow-y-auto">
+      <button (click)="isModalOpen = false" class="absolute top-2 right-2 text-red-600 hover:text-red-800 text-3xl font-bold">&times;</button>
+      <h2 class="text-2xl font-bold mb-4 text-center">{{ selectedHouse?.title }}</h2>
+      <div class="flex space-x-2 overflow-x-auto mb-4">
+        <img *ngFor="let img of selectedHouse?.pictures" [src]="img.url" class="w-32 h-32 object-cover rounded shadow border">
+      </div>
+      <div class="flex flex-wrap gap-6 text--600 text-sm md:text-base">
+        <p><strong>📐 Surface (m²):</strong> {{ selectedHouse?.surface }}</p>
+        <p><strong>🛋️ Nombre de pièces:</strong> {{ selectedHouse?.rooms }}</p>
+        <p><strong>🛏️ Nombre de chambres:</strong> {{ selectedHouse?.bedrooms }}</p>
+        <p><strong>🛁 Nombre de salles de bain:</strong> {{ selectedHouse?.bathrooms }}</p>        
+        <p><strong>📝 Description:</strong> {{ selectedHouse?.description }}</p>
+        <p><strong>👤 Nom du bailleur:</strong> {{ selectedHouse?.user?.firstName }} {{ selectedHouse?.user?.lastName }}</p>
+        <p><strong>🏷️ Type:</strong> {{ selectedHouse?.type }}</p>
+        <p><strong>💰 Prix:</strong> {{ selectedHouse?.price }} TND</p>
+        <p><strong>🏙️ Ville:</strong> {{ selectedHouse?.location }}</p>
+        <p><strong>📍 Adresse exacte:</strong> {{ selectedHouse?.city }}</p>
+        <p><strong>📮 Code Postal:</strong> {{ selectedHouse?.poste_code }}</p>
+      </div>
+      <!-- Caractéristiques -->
+      <div class="w-full mt-6">
+        <h3 class="text-lg font-bold mb-2">🛠️ <strong>Caractéristiques:</strong></h3>
+        <ul class="list-disc list-inside space-y-1">
+          <li *ngFor="let char of selectedHouse?.characteristics">
+            <strong>{{ getCharacteristicName(char.characteristicId) }}</strong> : {{ char.quantite }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Équipements -->
+      <div class="w-full mt-6">
+        <h3 class="text-lg font-bold mb-2">🏡 <strong>Équipements:</strong></h3>
+        <ul class="list-disc list-inside space-y-1">
+          <li *ngFor="let eq of selectedHouse?.Equipment">
+            <strong>{{ getEquipmentName(eq.equipementId) }}</strong> : {{ eq.quantite }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Composant de suppression -->
+  <app-delete *ngIf="close" [selectedList]="selectedhouses" (close)="actionClose()" (save)="actionSave()">
+  </app-delete>
+</div>

@@ -1,87 +1,134 @@
-<div class="container mx-auto p-6"> 
-    <h1 class="text-2xl font-bold mb-6">Liste des offres</h1>
-  
-    <div class="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3 mb-4">
-      <button
-        routerLink="/offre/add-offre"
-        type="button"
-        class="flex items-center gap-2 text-green-700 hover:text-white border border-green-700 hover:bg-green-800"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+<div class="container mx-auto p-6">
+  <!-- Barre de recherche améliorée -->
+  <div class="mb-10 px-4">
+    <div class="relative max-w-4xl mx-auto">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+        <svg class="w-5 h-5 text-blue-400 transition-all duration-300 group-focus-within:text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
         </svg>
-        Ajouter
-      </button>
-  
-      <button
-        (click)="actionOpen()"
-        type="button"
-        class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z" />
-        </svg>
-        Supprimer
-      </button>
-  
-      <button
-        (click)="editRouter()"
-        type="button"
-        [disabled]="isButtonDisabled"
-        class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z" />
-        </svg>
-        Modifier
-      </button>
+      </div>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        (input)="filterOffres()"
+        class="block w-full py-3 pl-12 pr-5 text-base text-gray-800 placeholder-gray-400 bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-300 focus:ring-2 focus:ring-blue-300 focus:border-blue-500 hover:border-blue-300 focus:shadow-md outline-none"
+        placeholder="Rechercher par titre, adresse ou disponibilité...">
     </div>
-  
-    <table class="min-w-full bg-white border border-gray-300">
-      <thead>
-        <tr>
-          <th class="py-2 px-4 border-b">
-            <input
-              type="checkbox"
-              [(ngModel)]="selectAll"
-              (change)="toggleSelectAll()"
-              class="w-4 h-4"
-            />
-          </th>
-          <th class="py-2 px-4 border-b">Titre</th>
-          <th class="py-2 px-4 border-b">Description</th>
-          <th class="py-2 px-4 border-b">Date de publication</th>
-          <th class="py-2 px-4 border-b">Heure de publication</th>
-          <th class="py-2 px-4 border-b">Adresse</th>
-          <th class="py-2 px-4 border-b">Disponibilité</th>
-          <th class="py-2 px-4 border-b">Prix TTC</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let offre of offres" class="hover:bg-gray-50">
-          <td class="py-2 px-4 border-b">
-            <input
-              type="checkbox"
-              [(ngModel)]="offre.selected"
-              (change)="onCheckboxChange()"
-              class="w-4 h-4"
-            />
-          </td>
-          <td class="py-2 px-4 border-b">{{ offre.title }}</td>
-          <td class="py-2 px-4 border-b">{{ offre.description }}</td>
-          <td class="py-2 px-4 border-b">{{ offre.publicationDate }}</td>
-          <td class="py-2 px-4 border-b">{{ offre.publicationTime }}</td>
-          <td class="py-2 px-4 border-b">{{ offre.address }}</td>
-          <td class="py-2 px-4 border-b">{{ offre.availability }}</td>
-          <td class="py-2 px-4 border-b">{{ offre.priceTTC }}TND</td>
-        </tr>
-      </tbody>
-    </table>
-    <app-delete-offre *ngIf="close"
+  </div>
+  <h1 class="text-2xl font-bold mb-6">Liste des offres</h1>
+  <!-- Boutons d'action -->
+  <div class="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3 mb-4">
+    <button
+      (click)="actionOpen()"
+      type="button"
+      class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z" />
+      </svg>
+      Supprimer
+    </button>
+
+    <button
+      (click)="editRouter()"
+      type="button"
+      [disabled]="isButtonDisabled"
+      class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z" />
+      </svg>
+      Modifier
+    </button>
+  </div>
+
+  <!-- Tableau des résultats -->
+  <table class="min-w-full bg-white border border-gray-300" *ngIf="filteredOffres.length > 0">
+    <thead>
+      <tr>
+        <th class="py-2 px-4 border-b">
+          <input
+            type="checkbox"
+            [(ngModel)]="selectAll"
+            (change)="toggleSelectAll()"
+            class="w-4 h-4"
+          />
+        </th>
+        <th class="py-2 px-4 border-b">Image</th>
+        <th class="py-2 px-4 border-b">Titre</th>
+        <th class="py-2 px-4 border-b">Description</th>
+        <th class="py-2 px-4 border-b">Date de publication</th>
+        <th class="py-2 px-4 border-b">Heure de publication</th>
+        <th class="py-2 px-4 border-b">Adresse</th>
+        <th class="py-2 px-4 border-b">Disponibilité</th>
+        <th class="py-2 px-4 border-b">Prix HT</th>
+        <th class="py-2 px-4 border-b">TVA (%)</th>
+        <th class="py-2 px-4 border-b">Prix TTC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let offre of filteredOffres" class="hover:bg-gray-50">
+        <td class="py-2 px-4 border-b">
+          <input
+            type="checkbox"
+            [(ngModel)]="offre.selected"
+            (change)="onCheckboxChange()"
+            class="w-4 h-4"
+          />
+        </td>
+        <td class="py-2 px-4 border-b">
+          <img [src]="offre.imageUrl" alt="Image offre" class="w-20 h-20 object-cover rounded-lg shadow-md"/>
+        </td>
+        <td class="py-2 px-4 border-b">{{ offre.title }}</td>
+        <td class="py-2 px-4 border-b">{{ offre.description }}</td>
+        <td class="py-2 px-4 border-b">{{ offre.created_at }}</td>
+        <td class="py-2 px-4 border-b">{{ offre.time }}</td>
+        <td class="py-2 px-4 border-b">{{ offre.location }}</td>
+        <td class="py-2 px-4 border-b">
+          <span class="px-2 py-1 rounded-full text-white font-medium"
+                [ngClass]="{
+                  'bg-green-500': offre.availability === 'Disponible',
+                  'bg-yellow-500': offre.availability === 'Réserver',
+                  'bg-red-500': offre.availability === 'Louer'
+                }">
+            {{ offre.availability }}
+          </span>
+        </td>
+        <td class="py-2 px-4 border-b">{{ offre.priceHT }}TND</td>
+        <td class="py-2 px-4 border-b">{{ offre.tva }}%</td>
+        <td class="py-2 px-4 border-b">{{ offre.priceTTC }}TND</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Message aucun résultat -->
+  <div *ngIf="searchTerm && filteredOffres.length === 0" class="mt-8 text-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">Aucune offre trouvée</h3>
+    <p class="mt-2 text-gray-600">
+      Aucune offre ne correspond à votre recherche "<span class="font-semibold">{{searchTerm}}</span>"
+    </p>
+    <button 
+      (click)="clearSearch()"
+      class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+      Réinitialiser la recherche
+    </button>
+  </div>
+
+  <!-- Message liste vide -->
+  <div *ngIf="!searchTerm && filteredOffres.length === 0" class="mt-8 text-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">Aucune offre disponible</h3>
+    <p class="mt-2 text-gray-600">
+      Aucune offre n'est actuellement publiée dans le système
+    </p>
+  </div>
+
+  <app-delete-offre *ngIf="close"
     [selectedList]="selectedoffres"
     (close)="actionClose()"
     (save)="actionSave()">
-</app-delete-offre>
-  
-  </div>
-  
+  </app-delete-offre>
+</div>

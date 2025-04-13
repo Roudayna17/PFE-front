@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class AddCaracteristiqueComponent implements OnInit {
   caracteristiqueForm: FormGroup; // Reactive form
+  previewUrl: string | ArrayBuffer | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +34,11 @@ export class AddCaracteristiqueComponent implements OnInit {
       const file = input.files[0];
       this.caracteristiqueForm.patchValue({ icon: file });
       this.caracteristiqueForm.get('icon')?.updateValueAndValidity();
+      const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result;
+    };
+    reader.readAsDataURL(file);
   }
 }
 
@@ -70,7 +76,7 @@ export class AddCaracteristiqueComponent implements OnInit {
           icon: 'success',
           confirmButtonText: 'OK',
         }).then(() => {
-          this.router.navigate(['/list-caracteristique']); // Redirect after success
+          this.router.navigate(['/caracteristique']); 
         });
       },
       (error) => {

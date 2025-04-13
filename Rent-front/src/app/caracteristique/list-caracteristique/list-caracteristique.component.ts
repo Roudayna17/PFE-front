@@ -65,6 +65,13 @@ export class ListCaracteristiqueComponent implements OnInit {
       console.log('No characteristics selected.');
     }
   }
+  actionClose(){
+    this.close=false
+  }
+  actionSave(){
+    this.close=false
+    this.loadCaracteristiques()
+  }
 
   actionOpen(): void {
     this.close = true;

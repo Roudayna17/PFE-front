@@ -14,6 +14,8 @@ export class Offre {
 
   publicationTime!: string;
 
+  imageUrl!: string;
+
   address!: string;
 
   tva!: number;

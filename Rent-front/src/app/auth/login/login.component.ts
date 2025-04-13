@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import AuthService from '../auth.service';
 import { Login } from '../auth';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -72,5 +73,81 @@ export class LoginComponent {
     localStorage.setItem('token', user.access_token);
     localStorage.setItem('id', user.userId);
     document.cookie = `token=${user.access_token}; Max-Age=${user.expiresIn}; path=/`;
+  }
+  openForgotPasswordPopup(event: Event) {
+    event.preventDefault(); // Évite le rechargement de la page
+    
+    Swal.fire({
+      title: 'Réinitialiser le mot de passe',
+      text: 'Comment souhaitez-vous recevoir le code de réinitialisation ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Par Email',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sendResetCode(); // Envoi du code
+      }
+    });
+  }
+
+  sendResetCode() {
+    // 🔴 Simuler l'envoi du code (Remplace ceci par un appel API réel)
+    console.log("Envoi du code de réinitialisation...");
+
+    Swal.fire({
+      title: 'Vérifiez votre boîte mail',
+      text: 'Un code de réinitialisation a été envoyé à votre adresse e-mail.',
+      icon: 'success',
+      confirmButtonText: 'Entrer le code'
+    }).then(() => {
+      this.enterVerificationCode();
+    });
+  }
+
+  enterVerificationCode() {
+    Swal.fire({
+      title: 'Entrer le code de vérification',
+      input: 'text',
+      inputPlaceholder: 'Entrez le code reçu par e-mail',
+      showCancelButton: true,
+      confirmButtonText: 'Valider',
+      cancelButtonText: 'Annuler',
+      preConfirm: (code) => {
+        if (!code) {
+          Swal.showValidationMessage('Le code ne peut pas être vide.');
+        }
+        return code; // Retourner le code saisi
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.verifyCode(result.value);
+      }
+    });
+  }
+
+  verifyCode(enteredCode: string) {
+    const correctCode = "123456"; // 🔴 Ici, il faut comparer avec le vrai code reçu par email
+
+    if (enteredCode === correctCode) {
+      Swal.fire({
+        title: 'Code correct !',
+        text: 'Vous pouvez maintenant réinitialiser votre mot de passe.',
+        icon: 'success',
+        confirmButtonText: 'Changer le mot de passe'
+      }).then(() => {
+        // 🔴 Rediriger vers la page de réinitialisation du mot de passe
+        console.log("Redirection vers la page de changement de mot de passe...");
+      });
+    } else {
+      Swal.fire({
+        title: 'Erreur',
+        text: 'Le code que vous avez saisi est incorrect.',
+        icon: 'error',
+        confirmButtonText: 'Réessayer'
+      }).then(() => {
+        this.enterVerificationCode(); // Redemander le code
+      });
+    }
   }
 }

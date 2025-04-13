@@ -25,7 +25,7 @@ export class UpdateComponent {
       personalInfo: this.fb.group({
         firstname: ['', [Validators.required, Validators.minLength(2)]],
         lastName: ['', [Validators.required, Validators.minLength(2)]],
-        telephone: ['', Validators.pattern('^\\+?[0-9]{8,11}$')]
+        telephone: ['', [Validators.required, Validators.pattern('^(\\+216)?[2-57-9][0-9]{7}$')]]
 
     
       }),
@@ -88,7 +88,6 @@ export class UpdateComponent {
   }
   Onsubmit() {
     let locataire= new Lessor()
-console.log('hello',this.lessorForm.value)
     
         const formValues = this.lessorForm.value;
     
@@ -111,7 +110,6 @@ console.log('hello',this.lessorForm.value)
       locataire.telephone = this.lessorForm.get('personalInfo.telephone')?.value;
     
     
-console.log("locataire",locataire)
     
     this.lessorService.updateLessor(this.id,locataire).subscribe(data=>{
       console.log("data",data)
@@ -129,7 +127,7 @@ console.log("locataire",locataire)
   
 }
 back(){
-  this.router.navigate(["/locataire"])
+  this.router.navigate(["/lessor"])
 }
 
   finishStepper(): void {

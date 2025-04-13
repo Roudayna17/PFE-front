@@ -29,10 +29,10 @@
   <!-- Stepper Content -->
   <div class="mt-5 sm:mt-8 p-5 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
     <div *ngIf="showError" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-      <span class="font-medium">Danger alert!</span> {{msg}}.
+      <span class="font-medium"></span> {{msg}}.
     </div>
     <div *ngIf="show" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-      <span class="font-medium">Success alert!</span> {{msg}}
+      <span class="font-medium"></span> {{msg}}
     </div>
     <form [formGroup]="locataireForm">
 
@@ -117,7 +117,7 @@
         <button *ngIf="!show" type="button"  [disabled]="locataireForm.get('personalInfo')?.invalid && currentStep==1  || locataireForm.get('emailcontact')?.invalid  && currentStep==2|| locataireForm.get('address')?.invalid && currentStep==3"
           class="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           (click)="currentStep === 3 ?   Onsubmit(): goToNextStep()">
-          {{ currentStep === 3 ? 'Enregistrer' : 'Suivant' }}
+          {{ currentStep === 3 ? 'Mettre à jour' : 'Suivant' }}
         </button>
         <button *ngIf="show" (click)="back()" type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Retour</button>
 

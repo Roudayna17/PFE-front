@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators ,} from '@angular/forms';
 import { Locataire } from '../locataire';
 import { LocataireService } from '../locataire.service';
 import { Router } from '@angular/router';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class AddLocataireComponent {
         personalInfo: this.fb.group({
           firstname: ['', [Validators.required, Validators.minLength(2)]],
           lastName: ['', [Validators.required, Validators.minLength(2)]],
-          telephone: ['', [Validators.required, Validators.pattern('^\\+?[0-9]{8,11}$')]]
+          telephone: ['', [Validators.required, Validators.pattern('^(\\+216)?[2-57-9][0-9]{7}$')]]
 
       
         }),
@@ -33,7 +34,7 @@ export class AddLocataireComponent {
           email: ['', [Validators.required, Validators.email]],
           password: ['', [Validators.required, Validators.minLength(6)]],
           confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
-        })   ,
+           }, { validator: passwordMatchValidator }), 
           address: this.fb.group({
           ville: ['', Validators.required],
           region: ['', Validators.required],
@@ -80,11 +81,12 @@ export class AddLocataireComponent {
         locataire.firstName = this.locataireForm.get('personalInfo.firstname')?.value;
         locataire.lastName = this.locataireForm.get('personalInfo.lastName')?.value;
         locataire.email = this.locataireForm.get('emailcontact.email')?.value;
+        locataire.telephone = this.locataireForm.get('personalInfo.telephone')?.value;
+
         locataire.password = this.locataireForm.get('emailcontact.password')?.value;
         locataire.city = this.locataireForm.get('address.ville')?.value;
         locataire.state = this.locataireForm.get('address.region')?.value;
         locataire.codePostal = this.locataireForm.get('address.codePostal')?.value;
-        locataire.telephone = this.locataireForm.get('address.telephone')?.value;
       
       
   console.log("locataire",locataire)
@@ -122,8 +124,10 @@ export class AddLocataireComponent {
       return false;
     }
   
+  }
+  export function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
   
-  
-  
-  
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }

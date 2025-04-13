@@ -1,4 +1,5 @@
 export interface Caracteristique {
+  name: string;
     image: any;
     id?: number;
     title: string;

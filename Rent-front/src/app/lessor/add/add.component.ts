@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators ,} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Lessor } from '../lessor';
 import { LessorService } from '../lessor.service';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -23,15 +25,15 @@ export class AddComponent {
         personalInfo: this.fb.group({
           firstname: ['', [Validators.required, Validators.minLength(2)]],
           lastName: ['', [Validators.required, Validators.minLength(2)]],
-          telephone: ['', [Validators.required, Validators.pattern('^\\+?[0-9]{8,11}$')]]
+          telephone: ['', [Validators.required, Validators.pattern('^(\\+216)?[2-57-9][0-9]{7}$')]]
 
       
         }),
         emailcontact:this.fb.group({
           email: ['', [Validators.required, Validators.email]],
           password: ['', [Validators.required, Validators.minLength(6)]],
-          confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
-        })   ,
+           confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
+            }, { validator: passwordMatchValidator }), 
           address: this.fb.group({
           ville: ['', Validators.required],
           region: ['', Validators.required],
@@ -121,6 +123,10 @@ export class AddComponent {
     }
   
   
-  
-  
+}
+export function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+
+  return password === confirmPassword ? null : { passwordMismatch: true };
 }

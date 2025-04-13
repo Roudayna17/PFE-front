@@ -1,9 +1,10 @@
 <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-  <h1 class="text-2xl font-bold mb-6 text-gray-800">Modifier le caracteristique</h1>
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Modifier une caractéristique</h1>
 
   <form [formGroup]="caracteristiqueForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <!-- Champ Titre -->
     <div>
-      <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+      <label for="title" class="block text-sm font-medium text-gray-700">Nom</label>
       <input
         type="text"
         id="title"
@@ -15,6 +16,7 @@
       </div>
     </div>
 
+    <!-- Champ Description -->
     <div>
       <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
       <textarea
@@ -28,35 +30,55 @@
       </div>
     </div>
 
-    <div>
-      <label for="icon" class="block text-sm font-medium text-gray-700">Nouvelle icône</label>
+    <!-- Aperçu de l'image actuelle -->
+    <div *ngIf="caracteristiqueForm.get('image')?.value">
+      <label class="block text-sm font-medium text-gray-700">Icône actuelle</label>
+      <img
+        [src]="caracteristiqueForm.get('image')?.value"
+        alt="Image actuelle"
+        class="mt-2 w-32 h-32 object-cover rounded-md"
+      />
+    </div>
+
+    <!-- Nouvelle image -->
+    <div class="mt-4">
+      <label class="block text-sm font-medium text-gray-700">Nouvelle icône</label>
       <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
         <div class="space-y-1 text-center">
-          <img
-            *ngIf="caracteristiqueForm.get('image')?.value"
-            [src]="caracteristiqueForm.get('image')?.value"
-            class="h-20 w-20 rounded-lg"
-            alt="Image actuelle"
-          />
           <input
-            id="file-upload"
             type="file"
+            id="file-upload"
             (change)="onFileChange($event)"
-            class="sr-only"
+            class="sr-only" 
             accept="image/*"
           />
+          <label 
+            for="file-upload"
+            class="cursor-pointer text-indigo-600 hover:text-indigo-500">
+            Cliquez ici pour Télécharger une icône          </label>
           <p class="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 10MB</p>
         </div>
       </div>
     </div>
 
+    <!-- Aperçu de la nouvelle image -->
+    <div *ngIf="imagePreview">
+      <label class="block text-sm font-medium text-gray-700">Aperçu de la nouvelle icône</label>
+      <img
+        [src]="imagePreview"
+        alt="Aperçu de la nouvelle image"
+        class="mt-2 w-32 h-32 object-cover rounded-md"
+      />
+    </div>
+
+    <!-- Bouton de soumission -->
     <div>
       <button
-        type="submit"
-        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Mettre à jour
-      </button>
+  type="submit"
+  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+>
+  Mettre à jour
+</button>
     </div>
   </form>
 </div>

@@ -1,47 +1,120 @@
 <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Ajouter une Offre</h2>
-  
-    <form [formGroup]="offreForm" (ngSubmit)="submitForm()">
+  <h2 class="text-xl font-bold text-gray-800 mb-4">Ajouter une Offre</h2>
+
+  <form [formGroup]="offreForm" (ngSubmit)="submitForm()">
+    <!-- Image -->
+<div class="mb-4">
+  <label class="block text-sm font-medium text-gray-700">Image</label>
+  <img *ngIf="previewImage" [src]="previewImage" alt="Aperçu de l'image" class="mt-2 w-32 h-32 object-cover rounded-lg shadow">
+</div>
+
       <!-- Titre -->
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Titre</label>
-        <input type="text" formControlName="title" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+          <label class="block text-sm font-medium text-gray-700">Titre</label>
+          <input type="text" formControlName="title" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+          <div *ngIf="offreForm.get('title')?.invalid && offreForm.get('title')?.touched" class="text-red-600 text-sm">
+            Ce champ est obligatoire.
+          </div>
       </div>
-  
+      
+
       <!-- Description -->
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Description</label>
-        <textarea formControlName="description" rows="3" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"></textarea>
+          <label class="block text-sm font-medium text-gray-700">Description</label>
+          <textarea formControlName="description" rows="3" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"></textarea>
+          <div *ngIf="offreForm.get('description')?.invalid && offreForm.get('description')?.touched" class="text-red-600 text-sm">
+            Ce champ est obligatoire.
+          </div>
       </div>
-  
-      <!-- Sélection Maison -->
+
+      <!-- Date de publication -->
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Sélectionner une maison</label>
-        <select formControlName="houseId" (change)="onHouseSelect($event)" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
-          <option value="">-- Choisir une maison --</option>
-          <option *ngFor="let house of houses" [value]="house.id">{{ house.name }} - {{ house.price }} DZD</option>
-        </select>
+          <label class="block text-sm font-medium text-gray-700">Date de publication</label>
+          <input type="date" formControlName="created_at" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
       </div>
-  
-      <!-- Prix -->
+
+      <!-- Heure de publication -->
+      <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Heure de publication</label>
+          <input type="time" formControlName="time" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+      </div>
+
+      <!-- Adresse -->
+      <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Adresse</label>
+          <input type="text" formControlName="location" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+          <div *ngIf="offreForm.get('location')?.invalid && offreForm.get('location')?.touched" class="text-red-600 text-sm">
+            Ce champ est obligatoire.
+          </div>
+      </div>
+       <!-- Prix HT -->
   <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-700">Prix</label>
-    <input type="text" formControlName="price" [attr.disabled]="'disabled'"
-      class="w-full p-2 border rounded-lg bg-gray-100">
+    <label class="block text-sm font-medium text-gray-700">Prix Hors Taxes (HT)</label>
+    <input type="number" formControlName="priceHT" (input)="calculateTTC()" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+    <div *ngIf="offreForm.get('priceHT')?.invalid && offreForm.get('priceHT')?.touched" class="text-red-600 text-sm">
+      Ce champ est obligatoire.
+    </div>
+</div>
+
+<!-- TVA (%) -->
+<div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700">TVA (%)</label>
+    <input type="number" formControlName="tva" (input)="calculateTTC()" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
+    <div *ngIf="offreForm.get('tva')?.invalid && offreForm.get('tva')?.touched" class="text-red-600 text-sm">
+      Ce champ est obligatoire.
+    </div>
+</div>
+
+<!-- Prix TTC -->
+<div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700">Prix TTC</label>
+    <input type="text" formControlName="priceTTC" [disabled]="true" class="w-full p-2 border rounded-lg bg-gray-100">
+</div>
+
+ 
+
+  
+ <!-- Disponibilité -->
+ <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-900">Disponibilité :</label>
+  
+    <div class="flex space-x-4 mt-2">
+      <!-- Disponible -->
+      <label class="flex items-center space-x-2 cursor-pointer">
+        <input type="radio" formControlName="availability" value="Disponible" class="hidden">
+        <span class="px-4 py-2 rounded-lg text-white font-semibold"
+              [class.bg-green-500]="offreForm.value.availability === 'Disponible'"
+              [class.bg-gray-300]="offreForm.value.availability !== 'Disponible'">
+          Disponible
+        </span>
+      </label>
+  
+      <!-- Réserver -->
+      <label class="flex items-center space-x-2 cursor-pointer">
+        <input type="radio" formControlName="availability" value="Réserver" class="hidden">
+        <span class="px-4 py-2 rounded-lg text-white font-semibold"
+              [class.bg-yellow-500]="offreForm.value.availability === 'Réserver'"
+              [class.bg-gray-300]="offreForm.value.availability !== 'Réserver'">
+          Réserver
+        </span>
+      </label>
+  
+      <!-- Louer -->
+      <label class="flex items-center space-x-2 cursor-pointer">
+        <input type="radio" formControlName="availability" value="Louer" class="hidden">
+        <span class="px-4 py-2 rounded-lg text-white font-semibold"
+              [class.bg-red-500]="offreForm.value.availability === 'Louer'"
+              [class.bg-gray-300]="offreForm.value.availability !== 'Louer'">
+          Louer
+        </span>
+      </label>
+    </div>
   </div>
   
-  <!-- Prix Total avec TVA et TCC -->
-  <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-700">Prix Total (avec TVA & TCC)</label>
-    <input type="text" formControlName="totalPrice" [attr.disabled]="'disabled'"
-      class="w-full p-2 border rounded-lg bg-gray-100">
-  </div>
-  
-  
+      
       <!-- Bouton -->
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-        Créer l'Offre
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Ajouter l'Offre
       </button>
-    </form>
-  </div>
-  
+  </form>
+</div>

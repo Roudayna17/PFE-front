@@ -4,11 +4,12 @@ import { AddEquipemntComponent } from './add-equipemnt/add-equipemnt.component';
 import { UpdateEquipemntComponent } from './update-equipemnt/update-equipemnt.component';
 import { ListEquipemntComponent } from './list-equipemnt/list-equipemnt.component';
 import { DeleteEquipemntComponent } from './delete-equipemnt/delete-equipemnt.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'list-equipement', pathMatch: 'full' }, // Redirection vers la liste des locataires
+    { path: '', redirectTo: 'list-equipement', pathMatch: 'full' }, 
     { path: 'add-equipement', component: AddEquipemntComponent },
-    { path: 'update-equipement/:id', component: UpdateEquipemntComponent }, // Ajout de ":id" pour identifier le locataire à modifier
+    { path: 'update-equipement/:id', component: UpdateEquipemntComponent }, 
     { path: 'list-equipement', component: ListEquipemntComponent },
     { path: 'delete-equipement/:id', component: DeleteEquipemntComponent } 
 ];

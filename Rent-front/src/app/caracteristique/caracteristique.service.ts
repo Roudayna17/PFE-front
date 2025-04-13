@@ -7,6 +7,7 @@ import { Caracteristique } from './caracteristique';
   providedIn: 'root'
 })
 export class CaracteristiqueService {
+ 
   baseUrl: string = 'http://localhost:3000/characteristic';
   private apiUrl = `${this.baseUrl}/list-Characteristic`;
 
@@ -29,6 +30,9 @@ export class CaracteristiqueService {
   }
 
   deleteCharacteristic(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/delete-characteristic${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/delete-characteristic${id}`);
+  }
+  deleteMultiple(ids: number[]): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/delete-Multiple`, { ids });
   }
 }

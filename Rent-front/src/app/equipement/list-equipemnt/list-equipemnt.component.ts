@@ -26,7 +26,8 @@ export class ListEquipemntComponent implements OnInit {
 
   loadEquipements() {
     this.equipementService.getEquipements().subscribe(
-      (data) => {
+      (data : Equipement[]) => {
+        console.log('Data reçue :', data); // Vérifiez ici que les données ne sont pas nulles
         this.equipements = data;
       },
       (error) => {
@@ -34,6 +35,7 @@ export class ListEquipemntComponent implements OnInit {
       }
     );
   }
+  
 
   // Sélectionner ou désélectionner tous les éléments
   toggleSelectAll() {
