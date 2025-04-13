@@ -25,7 +25,7 @@ export class UpdateLocataireComponent {
       personalInfo: this.fb.group({
         firstname: ['', [Validators.required, Validators.minLength(2)]],
         lastName: ['', [Validators.required, Validators.minLength(2)]],
-        telephone: ['', Validators.pattern('^\\+?[0-9]{8,11}$')]
+        telephone: ['', [Validators.required, Validators.pattern('^(\\+216)?[2-57-9][0-9]{7}$')]]
 
     
       }),

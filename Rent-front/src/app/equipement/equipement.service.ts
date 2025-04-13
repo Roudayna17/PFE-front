@@ -7,29 +7,26 @@ import { Equipement } from './equipement';
   providedIn: 'root',
 })
 export class EquipementService {
-  getCharacteristicById(id: number) {
-    throw new Error('Method not implemented.');
-  }
  
- 
-  private apiUrl = 'http://localhost:3000/equipement';
+  private apiUrl = 'http://localhost:3000/equipment';
 
   constructor(private http: HttpClient) {}
 
   addEquipement(equipement: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create-equipement`, equipement);
+    return this.http.post(`${this.apiUrl}/create-equipment`, equipement);
   }
 
   getEquipementById(id: number): Observable<Equipement> {
-    return this.http.get<Equipement>(`${this.apiUrl}/detail-equipement/${id}`);
+    return this.http.get<Equipement>(`${this.apiUrl}/detail-equipment/${id}`);
   }
 
   updateEquipement(id: number, equipement: FormData): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/update-equipement/${id}`, equipement);
+    return this.http.patch(`${this.apiUrl}/update-equipment/${id}`, equipement);
   }
   getEquipements(): Observable<Equipement[]> {
-    return this.http.get<Equipement[]>(`${this.apiUrl}/list-equipement`);
+    return this.http.get<Equipement[]>(`${this.apiUrl}/list-equipment`);
   }
+  
  
   deleteMultiple(ids: number[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/delete-multiple`, { ids });
@@ -38,6 +35,6 @@ export class EquipementService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
   deleteEquipement(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete-equipement/${id}`);
+    return this.http.delete(`${this.apiUrl}/delete-equipment/${id}`);
   }
 }

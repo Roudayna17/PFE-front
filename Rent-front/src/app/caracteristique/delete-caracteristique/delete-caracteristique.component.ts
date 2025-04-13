@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2'; // Importez SweetAlert2
+import { CaracteristiqueService } from '../caracteristique.service';
 
 interface Caracteristique {
   id: number;
@@ -14,37 +16,31 @@ interface Caracteristique {
   styleUrls: ['./delete-caracteristique.component.css']
 })
 export class DeleteCaracteristiqueComponent {
-  caracteristiques: Caracteristique[] = []; 
-  showDeleteAlert = false;  
-  caracteristiqueToDeleteId: number | null = null;  
-
-  constructor(private http: HttpClient, private router: Router) {}
-
-  openDeleteConfirmation(id: number) {
-    this.caracteristiqueToDeleteId = id;  
-    this.showDeleteAlert = true;  
+   @Input('selectedList') selectedList: any[] = [];
+        
+          @Output()
+          close= new EventEmitter<boolean>()
+          @Output()
+          save= new EventEmitter<boolean>()
+          constructor(private caracteristiqueService:CaracteristiqueService){
+        
+          }
+          closedEvent()
+          {
+            this.close.emit(true)
+          }
+          deletelist() {
+            if (this.selectedList.length === 0) {
+              console.warn("Aucun caractéristique sélectionné !");
+              return;
+            }
+          
+            const caracteristiqueIds = this.selectedList.map(caracteristique => caracteristique.id);
+            console.log("caractéristique sélectionnés :", caracteristiqueIds);
+          
+            this.caracteristiqueService.deleteMultiple(caracteristiqueIds).subscribe(data => {
+              this.save.emit(true);
+            });
+          }
+    
   }
-
-  cancelDelete() {
-    this.showDeleteAlert = false;  
-    this.caracteristiqueToDeleteId = null;  
-  }
-
-  deleteCaracteristique() {
-    if (this.caracteristiqueToDeleteId !== null) {
-      this.http.delete(`http://localhost:3000/characteristic/${this.caracteristiqueToDeleteId}`).subscribe(
-        (response) => {
-          console.log('Caractéristique supprimée avec succès!', response);
-          this.caracteristiques = this.caracteristiques.filter(
-            (caracteristique: Caracteristique) => caracteristique.id !== this.caracteristiqueToDeleteId
-          );
-          this.showDeleteAlert = false; 
-          this.caracteristiqueToDeleteId = null;  
-        },
-        (error) => {
-          console.error('Erreur lors de la suppression de la caractéristique', error);
-        }
-      );
-    }
-  }
-}

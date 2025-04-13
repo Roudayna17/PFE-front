@@ -12,8 +12,11 @@ export class House {
     poste_code!: string;
   
     price!: number;
+
+
+    type!:string;
   
-    availability!: Date;
+    availability!: string;
   
     created_at!: Date;
   

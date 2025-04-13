@@ -13,13 +13,17 @@ import Swal from 'sweetalert2';
   styleUrls: ['./add.component.css']
 })
 export class AddComponent implements OnInit {
+  arrayDetails: any=[];
+ 
+  
   houseForm: FormGroup;
   characteristics: any[] = [];
   equipements: any[] = [];
   pictureArray: Picture[] = [];
-  arrayCharacteristics: number[] = [];
-  arrayEquipements: number[] = [];
-
+  arrayCharacteristics: { id: number; quantite: number }[] = [];
+  arrayEquipements: { id: number; quantite: number }[] = [];
+  houseId!: number;
+ quantityCharat:number=0
   constructor(
     private fb: FormBuilder,
     private houseService: HouseService,
@@ -30,69 +34,84 @@ export class AddComponent implements OnInit {
     this.houseForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
-      location: ['', Validators.required],
       city: ['', Validators.required],
+      location: ['', Validators.required],
       poste_code: ['', [Validators.required, Validators.pattern('^[0-9]{4,5}$')]],
-      price: [0, [Validators.required, Validators.min(0)]],
-      availability: [null],
-      type: ['appartement', Validators.required], // Nouveau champ
-      equipments: [],
+      surface:['', Validators.required],
+      rooms:['', Validators.required],
+      bedrooms:['', Validators.required],
+      bathrooms:['', Validators.required],
+      price: ['', Validators.required],
+      type: ['', Validators.required],
       characteristics: [],
-      pictures: []
+      equipements: [],
+      pictures: [],
+      lessorId:[],
+      userId:[],
+      active:[true]
     });
   }
 
   ngOnInit(): void {
     this.getAllCharacteristics();
     this.loadEquipements();
+    
+  }
+  deletePic(picture: Picture): void {
+    this.pictureArray = this.pictureArray.filter(pic => pic !== picture);
   }
 
   getAllCharacteristics(): void {
     this.characteristicService.getCharacteristics().subscribe({
       next: (data) => {
-        this.characteristics = data;
+        this.characteristics = data.map(char => ({ ...char, quantite: 0 }));
       },
-      error: (err) => {
-        console.error('Error fetching characteristics:', err);
-      }
+      error: (err) => console.error('Erreur chargement caractéristiques:', err)
     });
   }
 
   loadEquipements(): void {
     this.equipementService.getEquipements().subscribe({
       next: (data) => {
-        this.equipements = data;
+        this.equipements = data.map(equip => ({ ...equip, quantite: 0 }));
       },
-      error: (err) => {
-        console.error('Error fetching equipements:', err);
-      }
+      error: (err) => console.error('Erreur chargement équipements:', err)
     });
   }
 
-  onSelectCharacteristic(event: Event, characteristicId: number): void {
+  onSelectCharacteristic(event: Event, characteristic: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
+      const quantite = characteristic.quantite || 0; // Assure-toi que la quantité soit initialisée à 0 si elle est absente.
+
     if (isChecked) {
-      this.arrayCharacteristics.push(characteristicId);
+      this.arrayDetails.push({ characteristicId: characteristic.id, quantite: characteristic.quantite  });
     } else {
-      const index = this.arrayCharacteristics.indexOf(characteristicId);
-      if (index !== -1) {
-        this.arrayCharacteristics.splice(index, 1);
-      }
+      this.arrayDetails = this.arrayDetails.filter((c:any) => c.characteristicId !== characteristic.id);
     }
-    console.log('Selected Characteristics:', this.arrayCharacteristics);
+    console.log("house details",this.arrayDetails)
   }
 
-  onSelectEquipement(event: Event, equipmentId: number): void {
+  onSelectEquipement(event: Event, equipement: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
+    const quantite = equipement.quantite || 0; // Assure-toi que la quantité soit initialisée à 0 si elle est absente.
+
     if (isChecked) {
-      this.arrayEquipements.push(equipmentId);
+      this.arrayDetails.push({ equipementId: equipement.id, quantite: equipement.quantite });
     } else {
-      const index = this.arrayEquipements.indexOf(equipmentId);
-      if (index !== -1) {
-        this.arrayEquipements.splice(index, 1);
-      }
+      this.arrayDetails = this.arrayDetails.filter((e:any) => e.equipementId !== equipement.id);
     }
-    console.log('Selected Equipements:', this.arrayEquipements);
+  }
+
+  onQuantityChange(type: string, id: number, event: Event): void {
+    const value = (event.target as HTMLInputElement).valueAsNumber;
+
+    if (type === 'characteristic') {
+      const item = this.arrayCharacteristics.find((c:any) => c.characteristicId === id);
+      if (item) item.quantite = value;
+    } else if (type === 'equipement') {
+      const item = this.arrayEquipements.find((e:any) => e.equipementId === id);
+      if (item) item.quantite = value;
+    }
   }
 
   picked(event: any): void {
@@ -108,98 +127,90 @@ export class AddComponent implements OnInit {
       }
     }
   }
+   
 
   handleInputChange(file: File): void {
     const pattern = /image-*/;
     const reader = new FileReader();
+  
     if (!file.type.match(pattern)) {
-      alert('Invalid image format');
+      alert('Format d\'image invalide');
       return;
     }
+  
     reader.onloadend = (e: any) => {
+      const imageUrl = e.target.result;
+  
+      // Vérifier si l'image existe déjà dans pictureArray
+      const exists = this.pictureArray.some(picture => picture.url === imageUrl);
+      if (exists) {
+        alert('Cette image est déjà ajoutée !');
+        return;
+      }
+  
       const picture: Picture = {
-        url: e.target.result,
+        url: imageUrl,
         defaults: this.pictureArray.length === 0
       };
+  
       this.pictureArray.push(picture);
     };
+  
     reader.readAsDataURL(file);
   }
-
-  deletePicAction(item: Picture): void {
-    const index = this.pictureArray.indexOf(item);
-    this.pictureArray.splice(index, 1);
-    if (item.defaults && this.pictureArray.length > 0) {
-      this.pictureArray[0].defaults = true;
+  
+  getCookie(cname: string) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
     }
+    return "";
   }
 
   onSubmit(): void {
-    // Vérifier que les tableaux des caractéristiques et équipements ne sont pas vides
-    if (this.arrayCharacteristics.length === 0) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Warning!',
-        text: 'Please select at least one characteristic.',
-      });
+    if (this.houseForm.invalid) {
+      Swal.fire({ icon: 'warning', title: 'Avertissement!', text: 'Veuillez remplir tous les champs obligatoires.' });
+      return;
+    }
+    if (this.pictureArray.length === 0) {
+      Swal.fire({ icon: 'warning', title: 'Avertissement!', text: 'Ajoutez au moins une image.' });
       return;
     }
 
-    if (this.arrayEquipements.length === 0) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Warning!',
-        text: 'Please select at least one equipment.',
-      });
+    if (this.arrayDetails.length === 0 ) {
+      Swal.fire({ icon: 'warning', title: 'Avertissement!', text: 'Sélectionnez au moins une caractéristique et un équipement.' });
       return;
     }
 
-    // Mettre à jour les valeurs du formulaire avec les caractéristiques et équipements sélectionnés
     this.houseForm.value.characteristics = this.arrayCharacteristics;
-    this.houseForm.value.equipments = this.arrayEquipements;
+   this.houseForm.value.equipements = this.arrayEquipements;
     this.houseForm.value.pictures = this.pictureArray;
+    this.houseForm.value.userId=Number(this.getCookie("id"))
 
     this.houseService.createHouse(this.houseForm.value).subscribe({
       next: (data) => {
-        // Ajouter les images après la création de la maison
-        this.pictureArray.forEach((picture) => {
-          picture.HouseId = data.id;
-          this.houseService.addPicture(picture).subscribe({
-            next: () => {
-              console.log('Picture added successfully');
-            },
-            error: (err) => {
-              console.error('Error adding picture:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while adding the picture.',
-              });
-            }
-          });
-        });
-
-        // Afficher une alerte de succès
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'House added successfully!',
-          confirmButtonText: 'OK',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.router.navigate(['/house']); // Rediriger après confirmation
-          }
+        this.pictureArray.forEach(async picture => {
+          picture.HouseId = data.id
+          console.log('picture',picture)
+          await this.houseService.addPicture(picture)
+            .subscribe(
+              picture => {
+                console.log("picture",picture)
+              })
+            })
+        Swal.fire({ icon: 'success', title: 'Succès!', text: 'Immobilier ajouté avec succès!' }).then(() => {
+          this.router.navigate(['/house']);
         });
       },
       error: (err) => {
-        console.error('Error adding house:', err);
-
-        // Afficher une alerte d'erreur
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'An error occurred while adding the house.',
-        });
+        Swal.fire({ icon: 'error', title: 'Erreur', text: 'Une erreur est survenue lors de l\'ajout d\'immobilier!' });
       }
     });
   }

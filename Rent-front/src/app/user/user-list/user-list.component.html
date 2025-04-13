@@ -1,116 +1,88 @@
-<div class="container"> 
-  <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-    <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
-      <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
-        <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
-          <div class="flex items-center flex-1 space-x-4">
-            <h5>
-              <span class="text-gray-500">Tous les Admins:</span>
-              <span class="dark:text-white">{{count}}</span>
-            </h5>
-            <h5>
-              <!-- <span class="text-gray-500">Total sales:</span>
-              <span class="dark:text-white">$88.4k</span> -->
-            </h5>
-          </div>
-          <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-            <!-- Ajouter Button -->
-            <button routerLink="/user/add-user" type="button" class="flex items-center gap-2 text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-              Ajouter
-            </button>
-            <button  (click)="actionOpen()" type="button" class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-              <svg  (click)="actionOpen()" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z" />
-              </svg>
-              Supprimer
-            </button>
-            <button (click)="editRouter()" type="button" [disabled]="isButtonDisabled" class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z" />
-              </svg>
-              Modifier
-            </button>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" class="p-4">
-                  <div class="flex items-center">
-                    <!-- Select All Checkbox -->
-                    <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" />
-                    <label for="checkbox-all" class="sr-only">checkbox</label>
-                  </div>
-                </th>
-                <th scope="col" class="px-4 py-3">Id</th>
-                <th scope="col" class="px-4 py-3">Nom</th>
-                <th scope="col" class="px-4 py-3">Prenom</th>
-                <th scope="col" class="px-4 py-3">Role</th>
-                <th scope="col" class="px-4 py-3">Image</th>
-                <th scope="col" class="px-4 py-3">Email</th>
-                <th scope="col" class="px-4 py-3">Date de création</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" *ngFor="let user of users">
-                <td class="w-4 px-4 py-3">
-                  <div class="flex items-center">
-                    <!-- Select Checkbox per Row -->
-                    <input id="checkbox-table-search-1" type="checkbox" [(ngModel)]="user.selected" (change)="onCheckboxChange()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                  </div>
-                </td>
-                <th scope="row" class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {{ user.id }}
-                </th>
-                <td class="px-4 py-2">{{ user.firstName }}</td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.lastName }}</td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <span 
-                  class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300" 
-                  *ngIf="user.role === 'admin'"> {{ user.role }}
-                </span>
-                  <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-yellow-300"  *ngIf="user.role=='superviseur'">
-                    {{ user.role }}
-                  </span>
-                  <span 
-                  class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300" 
-                  *ngIf="user.role === 'coordinateur'"> {{ user.role }}
-                </span>
-                
-                </td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.email }}</td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.image }}</td>
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Liste des administrateurs: <span class="text-blue-600">{{count}}</span></h1>
+    
+    <div class="flex space-x-3">
+      <button routerLink="/user/add-user" type="button" class="flex items-center gap-2 text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        Ajouter
+      </button>
+      
+      <button (click)="actionOpen()" type="button" class="flex items-center gap-2 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V3h6v3m-3 0v12m-4 4h8a2 2 0 002-2V6H5v12a2 2 0 002 2z"/>
+        </svg>
+        Supprimer
+      </button>
+      
+      <button (click)="editRouter()" type="button" [disabled]="isButtonDisabled" class="flex items-center gap-2 text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.293l-4.5 1.5 1.5-4.5L16.862 3.487z"/>
+        </svg>
+        Modifier
+      </button>
+    </div>
+  </div>
 
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.created_at }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
-        <!-- Pagination Section -->
-        <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-          <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-            Voir
-            <span class="font-semibold text-gray-900 dark:text-white">1-10</span>
-            parmis
-            <span class="font-semibold text-gray-900 dark:text-white">1000</span>
-          </span>
-          <!-- Pagination buttons -->
-          <ul class="inline-flex items-stretch -space-x-px">
-            <li><a href="#" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><span class="sr-only">Previous</span><svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg></a></li>
-            <li><a href="#" class="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a></li>
-            <li><a href="#" class="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a></li>
-            <li><a href="#" class="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a></li>
-            <li><a href="#" class="flex items-center justify-center h-full py-1.5 px-3 text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><span class="sr-only">Next</span><svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L9.586 10 7.293 7.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></a></li>
-          </ul>
-        </nav>
+  <!-- Tableau des administrateurs -->
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" class="h-4 w-4"/>
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prénom</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ville</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Région</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code Postal</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de création</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let user of users" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <input type="checkbox" [(ngModel)]="user.selected" (change)="onCheckboxChange()" class="h-4 w-4"/>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{user.firstName}}</td>
+          <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{user.lastName}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="bg-green-100 text-black-800 text-xs font-medium px-2.5 py-0.5 rounded-sm" *ngIf="user.role === 'admin'">
+              {{user.role}}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.email}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.telephone}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.city}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.state}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.codePostal}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.created_at}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Message liste vide -->
+    <div *ngIf="users.length === 0" class="p-8 text-center">
+      <div class="flex flex-col items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">Aucun administrateur enregistré</h3>
+        <button routerLink="/user/add-user" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Ajouter un administrateur
+        </button>
       </div>
     </div>
-    <app-user-delete  *ngIf="close" [selectedList]="selectedUsers"  (close)="actionClose()" (save)="actionSave()"></app-user-delete>
-  </section>
+  </div>
+
+  <app-user-delete *ngIf="close" [selectedList]="selectedUsers" (close)="actionClose()" (save)="actionSave()"></app-user-delete>
 </div>

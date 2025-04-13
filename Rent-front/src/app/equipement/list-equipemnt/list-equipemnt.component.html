@@ -57,10 +57,9 @@
             <label for="checkbox-all" class="sr-only">Sélectionner tout</label>
           </div>
         </th>
-        <th class="py-2 px-4 border-b">ID</th>
+        <th class="py-2 px-4 border-b">Image</th>
         <th class="py-2 px-4 border-b">Nom</th>
         <th class="py-2 px-4 border-b">Description</th>
-        <th class="py-2 px-4 border-b">Image</th>
       </tr>
     </thead>
     <tbody>
@@ -77,12 +76,12 @@
             <label for="checkbox-table-search-1" class="sr-only">Sélectionner</label>
           </div>
         </td>
-        <td class="py-2 px-4 border-b">{{ equipement.id }}</td>
-        <td class="py-2 px-4 border-b">{{ equipement.title }}</td>
-        <td class="py-2 px-4 border-b">{{ equipement.description }}</td>
         <td class="py-2 px-4 border-b">
           <img [src]="equipement.image" alt="Image" class="w-16 h-16 object-cover" />
         </td>
+        <td class="py-2 px-4 border-b">{{ equipement.title }}</td>
+        <td class="py-2 px-4 border-b">{{ equipement.description }}</td>
+       
         
       </tr>
     </tbody>

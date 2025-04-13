@@ -1,15 +1,32 @@
 <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
   <div class="flex flex-wrap justify-between items-center">
-    <!-- Logo and name on the left -->
+    <!-- Logo et nom à gauche -->
     <div class="flex justify-start items-center">
-        <img src="assets/logo.jpg" class="mr-9 h-12"  />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">RentEazy</span>
+      <!-- Logo circulaire avec ombre et bordure -->
+      <div class="mr-3 h-10 w-10 rounded-full overflow-hidden border-2 ">
+        <img 
+          src="assets/logoapp.jpg" 
+          class="h-full w-full object-cover" 
+          alt="Logo RentEazy" 
+          style="transform: scale(1.1)"
+        />
+      </div>
+      <span class="self-center text-2xl font-bold whitespace-nowrap dark:text-white text-gray-800">
+        RentEazy
+      </span>
     </div>
 
-    <!-- Admin email on the right -->
-    <div class="flex items-center lg:order-2">
-      <span class="text-sm text-gray-900 dark:text-white"></span>
+    <!-- Section Email + Icône Utilisateur à droite -->
+    <div class="flex items-center lg:order-2 space-x-2">
+      <span class="text-red-800 dark:text-red-400">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+        </svg>
+      </span>
+      <!-- Email de l'utilisateur -->
+      <span class="text-base font-medium text-gray-900 dark:text-white">
+        {{email}}
+      </span>
     </div>
   </div>
 </nav>
-   

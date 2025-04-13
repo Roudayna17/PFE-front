@@ -51,10 +51,9 @@
             <label for="checkbox-all" class="sr-only">Sélectionner tout</label>
           </div>
         </th>
-        <th class="py-2 px-4 border-b">ID</th>
-        <th class="py-2 px-4 border-b">title</th>
-        <th class="py-2 px-4 border-b">Description</th>
         <th class="py-2 px-4 border-b">Image</th>
+        <th class="py-2 px-4 border-b">Nom</th>
+        <th class="py-2 px-4 border-b">Description</th>
       
       </tr>
     </thead>
@@ -71,13 +70,15 @@
             <label for="checkbox-table-search-1" class="sr-only">Sélectionner</label>
           </div>
         </td>
-        <td class="py-2 px-4 border-b">{{ caracteristique.id }}</td>
-        <td class="py-2 px-4 border-b">{{ caracteristique.title }}</td>
-        <td class="py-2 px-4 border-b">{{ caracteristique.description }}</td>
         <td class="py-2 px-4 border-b">
           <img [src]="caracteristique.image" alt="Image" class="w-16 h-16 object-cover" />
         </td>
+        <td class="py-2 px-4 border-b">{{ caracteristique.title }}</td>
+        <td class="py-2 px-4 border-b">{{ caracteristique.description }}</td>
+       
       </tr>
     </tbody>
   </table>
+  <app-delete-caracteristique *ngIf="close" [selectedList]="selectedCaracteristiques"   (close)="actionClose()" (save)="actionSave()"></app-delete-caracteristique>
+
 </div>

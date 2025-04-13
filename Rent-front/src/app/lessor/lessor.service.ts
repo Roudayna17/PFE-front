@@ -31,6 +31,6 @@ export class LessorService {
   }
 
   deleteMultipleLessor(clientIds: string[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/delete-multiple-clients`, { ids: clientIds });
+    return this.http.post(`${this.apiUrl}/delete-multiple-lessor`, { ids: clientIds });
   }
 }

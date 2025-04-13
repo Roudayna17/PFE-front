@@ -20,7 +20,7 @@ export class HouseService {
   }
 
   updateHouse(id: number, houseData: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/house/update-house/${id}`, houseData);
+    return this.http.put(`${this.apiUrl}/house/update-house/${id}`, houseData);
   }
 
   deleteHouse(id: number): Observable<any> {
@@ -31,8 +31,11 @@ export class HouseService {
     return this.http.post<any>(this.apiUrl+'/pictures/add-picture',picture) as Observable <any>
   }
   deleteMultiple(ids: number[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}'house/delete-multiple`, { ids });
-  }
+  console.log("IDs envoyés pour suppression :", ids);
+  return this.http.post(`${this.apiUrl}/house/delete-multiple`, { ids })
+}
+  
+
   getAllHouses(): Observable<House[]> {
     return this.http.get<House[]>(`${this.apiUrl}/house/list-house`);
   }

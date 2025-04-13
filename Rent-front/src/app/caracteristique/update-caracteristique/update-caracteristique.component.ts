@@ -12,7 +12,9 @@ import Swal from 'sweetalert2';
 export class UpdateCaracteristiqueComponent implements OnInit {
   caracteristiqueForm: FormGroup; // Reactive form
   newImage: File | null = null; // For the new file upload
-id:number=0
+  imagePreview: string | null = null; // To display the preview of the new image
+  id: number = 0;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -22,8 +24,8 @@ id:number=0
     this.caracteristiqueForm = this.fb.group({
       id: [0],
       title: ['', Validators.required],
-      description: ['', Validators.required], 
-      image: [''], 
+      description: ['', Validators.required],
+      image: [''],
     });
   }
 
@@ -54,7 +56,8 @@ id:number=0
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.newImage = input.files[0]; 
+      this.newImage = input.files[0];
+      this.imagePreview = URL.createObjectURL(this.newImage); // Preview of the new image
     }
   }
 
@@ -78,6 +81,7 @@ id:number=0
     } else {
       formData.append('image', this.caracteristiqueForm.get('image')?.value);
     }
+
     this.caracteristiqueService.updateCharacteristic(this.id, formData).subscribe(
       (response) => {
         Swal.fire({
@@ -86,7 +90,7 @@ id:number=0
           icon: 'success',
           confirmButtonText: 'OK',
         }).then(() => {
-          this.router.navigate(['/caracteristique/list-caracteristique']); 
+          this.router.navigate(['/caracteristique']);
         });
       },
       (error) => {

@@ -31,7 +31,7 @@ currentStep: number = 1;
       emailcontact:this.fb.group({
         email: ['', [Validators.required, Validators.email]],
      
-      })   ,
+      }),
         address: this.fb.group({
           ville: ['', Validators.required],
         region: ['', Validators.required],
@@ -114,7 +114,7 @@ console.log("user",user)
     this.userService.updateUser(this.id,user).subscribe(data=>{
       console.log("data",data)
       this.show=true
-      this.msg="Utilisateur modifiée avec succès !"
+      this.msg="Admin modifiée avec succès !"
      
   
       

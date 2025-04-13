@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { User } from '../user';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-user-add',
   templateUrl: './user-add.component.html',
   styleUrl: './user-add.component.css'
 })
+
 export class UserADDComponent implements OnInit {
   currentStep: number = 1;
   maxSteps: number = 3;
@@ -30,12 +33,12 @@ export class UserADDComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
-      })   ,
+  }, { validator: passwordMatchValidator }), 
         address: this.fb.group({
         ville: ['', Validators.required],
         region: ['', Validators.required],
         codePostal: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]], // 5-digit postal code validation
-        telephone: ['', [Validators.required, Validators.pattern('^\\+?[0-9]{8,11}$')]]
+        telephone: ['', [Validators.required, Validators.pattern('^(\\+216)?[2-57-9][0-9]{7}$')]]
       }),
    
     });
@@ -91,7 +94,7 @@ console.log("user",user)
     this.userService.create(user).subscribe(data=>{
       console.log("data",data)
       this.show=true
-      this.msg="Utilisateur ajouté avec succès !"
+      this.msg="Admin ajouté avec succès !"
      
   
       
@@ -125,4 +128,10 @@ back(){
 
 
 
+}
+export function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+
+  return password === confirmPassword ? null : { passwordMismatch: true };
 }

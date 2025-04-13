@@ -21,12 +21,12 @@ listClient():Observable<any>
 return this.http.get(this.urlApi+'/Client/list-clients') as Observable<any>
 }
 
-getClientById(id:number) : Observable<Locataire>
-{
- return  this.http.get(this.urlApi+"/Client/"+JSON.stringify(id)) as Observable<Locataire> 
+getClientById(id: number): Observable<Locataire> {
+  return this.http.get(`${this.urlApi}/Client/Client/${id}`) as Observable<Locataire> 
 }
-updateClient(id:number,dataClient:Locataire) :Observable<Locataire>{
-  return this.http.patch(this.urlApi+"/Client/update-client/"+JSON.stringify(id),dataClient) as Observable<Locataire>
+
+updateClient(id: number, dataClient: Locataire): Observable<Locataire> {
+  return this.http.patch(`${this.urlApi}/Client/update-client/${id}`, dataClient) as Observable<Locataire>
 }
 DeleteClient(id:number): Observable<any>{
   return this.http.delete(this.urlApi+"/Client/delete-client/"+JSON.stringify(id))

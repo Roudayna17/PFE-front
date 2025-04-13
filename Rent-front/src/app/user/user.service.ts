@@ -21,9 +21,10 @@ urlApi:string='http://localhost:3000'
  {
   return this.http.post<User>(this.urlApi+'/user/create-user',userData) as Observable<User>
 }
-listUser():Observable<any>
-{
-  return this.http.get(this.urlApi+'/user/list-users') as Observable<any>
+// Dans user.service.ts
+listUser(): Observable<any> {
+  return this.http.get(this.urlApi+'/user/list-users')
+    
 }
 
 

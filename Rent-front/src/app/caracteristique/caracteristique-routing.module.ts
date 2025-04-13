@@ -8,7 +8,7 @@ import { AuthGuard } from '../auth/auth.guard';
 
 
 const routes: Routes = [
-    { path: '', redirectTo: 'list-caracteristique', pathMatch: 'full' }, // Redirection vers la liste des locataires
+    { path: '', redirectTo: 'list-caracteristique', pathMatch: 'full'}, 
     { path: 'add-caracteristique', component: AddCaracteristiqueComponent },
     { path: 'update-caracteristique/:id', component: UpdateCaracteristiqueComponent }, // Ajout de ":id" pour identifier le locataire à modifier
     { path: 'list-caracteristique', component: ListCaracteristiqueComponent },

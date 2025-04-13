@@ -1,69 +1,66 @@
-
-<div class="max-xl p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+<div class="max-xl p-6 bg-blue-100 border border-gray-300 rounded-lg shadow-sm">
   <div class="flex min-h-screen">
-  <!-- Partie gauche (Formulaire) -->
-
-  <div class="w-1/2 flex flex-col justify-center px-16">
-    <h1 class="text-3xl font-bold text-gray-800">Log in</h1>
-    <form [formGroup]="authForm" (ngSubmit)="login()" class="mt-6">
-      <label class="block text-sm font-medium text-gray-700">Email Address</label>
-      <input
-        type="email"
-        formControlName="email"
-        class="w-full mt-2 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        placeholder="mike@gmail.com"
-      />
-      <div *ngIf="authForm.get('email')?.invalid && authForm.get('email')?.touched" class="text-red-500 text-sm mt-1">
-        Veuillez entrer une adresse email valide.
-      </div>
-
-      <div class="flex justify-between items-center mt-4">
-        <label class="block text-sm font-medium text-gray-700">Password</label>
-        <a href="#" class="text-blue-600 text-sm">Forgot Password?</a>
-      </div>
-      <div class="relative">
+    <!-- Partie gauche (Formulaire) -->
+    <div class="w-1/2 flex flex-col justify-center px-16 bg-gray-100 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-blue-800">Bienvenue</h1>
+      <form [formGroup]="authForm" (ngSubmit)="login()" class="mt-6">
+        <label class="block text-sm font-medium text-gray-700">Adresse email</label>
         <input
-          type="{{ showPassword ? 'text' : 'password' }}"
-          id="password"
-          formControlName="password"
-          class="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="Enter your password"
+          type="email"
+          formControlName="email"
+          class="w-full mt-2 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
+        <div *ngIf="authForm.get('email')?.invalid && authForm.get('email')?.touched" class="text-red-500 font-medium text-sm mt-1">
+        </div>
+
+        <div class="flex justify-between items-center mt-4">
+          <label class="block text-sm font-medium text-gray-700">Mot de passe</label>
+          <a href="#" class="text-red-600 font-medium text-sm" (click)="openForgotPasswordPopup($event)">Mot de passe oublié?</a>
+        </div>
+        
+        <div class="relative">
+          <input
+            type="{{ showPassword ? 'text' : 'password' }}"
+            id="password"
+            formControlName="password"
+            class="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            placeholder="Entrez votre mot de passe"
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500"
+          >
+            👁️
+          </button>
+        </div>
+        <div *ngIf="authForm.get('password')?.invalid && authForm.get('password')?.touched" class="text-red-500 text-sm mt-1">
+          Le mot de passe doit contenir entre 6 et 20 caractères.
+        </div>
+
+        <div class="mt-4">
+          <label class="inline-flex items-center">
+            <input type="checkbox" formControlName="rememberMe" class="form-checkbox h-4 w-4 text-blue-600">
+            <span class="ml-2 font-medium text-gray-700">Se souvenir de moi</span>
+          </label>
+        </div>
+
         <button
-          type="button"
-          (click)="togglePasswordVisibility()"
-          class="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500"
+          type="submit"
+          [disabled]="authForm.invalid || isLoading"
+          class="w-full bg-blue-800 text-white py-3 mt-6 rounded-lg hover:bg-blue-800 transition disabled:bg-blue-800"
         >
-          👁️
+          {{ isLoading ? 'Recherche...' : 'Se connecter' }}
         </button>
-      </div>
-      <div *ngIf="authForm.get('password')?.invalid && authForm.get('password')?.touched" class="text-red-500 text-sm mt-1">
-        Le mot de passe doit contenir entre 6 et 20 caractères.
-      </div>
+        <div *ngIf="showError" class="mt-4 text-red-500  font-medium text-sm">
+          {{ message }}
+        </div>
+      </form>
+    </div>
 
-      <div class="mt-4">
-        <label class="inline-flex items-center">
-          <input type="checkbox" formControlName="rememberMe" class="form-checkbox h-4 w-4 text-blue-600">
-          <span class="ml-2 text-gray-700">Remember me</span>
-        </label>
-      </div>
-
-      <button
-        type="submit"
-        [disabled]="authForm.invalid || isLoading"
-        class="w-full bg-blue-600 text-white py-3 mt-6 rounded-lg hover:bg-blue-700 transition disabled:bg-blue-300"
-      >
-        {{ isLoading ? 'Loading...' : 'Log In' }}
-      </button>
-      <div *ngIf="showError" class="mt-4 text-red-500 text-sm">
-        {{ message }}
-      </div>
-    </form>
-  </div>
-
-  <!-- Partie droite (Illustration) -->
-  <div class="w-1/2 bg-blue-50 flex items-center justify-center">
-    <img src="assets/log.png" alt="Logo" class="w-90 mx-auto">
-  </div>
+    <!-- Partie droite (Illustration) -->
+    <div class="w-1/2 bg--500 flex items-center justify-center">
+      <img src="assets/super.png" alt="Logo" class="h-[850px] w-auto mx-auto">
+    </div>
   </div>
 </div>
