@@ -26,13 +26,6 @@
         <input type="time" formControlName="time" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
     </div>
   
-        <!-- Adresse -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Adresse</label>
-            <input type="text" formControlName="location" class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300">
-        </div>
-
-  
         <!-- Prix HT -->
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">Prix Hors Taxes (HT)</label>
@@ -65,13 +58,13 @@
         </span>
       </label>
   
-      <!-- Réserver -->
+      <!-- Bientôt dispo -->
       <label class="flex items-center space-x-2 cursor-pointer">
         <input type="radio" formControlName="availability" value="Réserver" class="hidden">
         <span class="px-4 py-2 rounded-lg text-white font-semibold"
               [class.bg-yellow-500]="offreForm.value.availability === 'Réserver'"
               [class.bg-gray-300]="offreForm.value.availability !== 'Réserver'">
-          Réserver
+            Réserver
         </span>
       </label>
   

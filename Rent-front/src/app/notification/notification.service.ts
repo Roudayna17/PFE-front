@@ -10,7 +10,7 @@ export interface Feedback {
   type: string;
   rating?: number;
   email?: string;
-  read: boolean; // Ajouté
+  read: boolean;
   createdAt: string;
 }
 
@@ -18,44 +18,55 @@ export interface Feedback {
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = 'http://localhost:3000/feedback'; // change if needed
+  private apiUrl = 'http://localhost:3000/feedback';
   private feedbackCount = new BehaviorSubject<number>(0);
+  private unreadFeedbacks: Feedback[] = [];
 
-  constructor(private http: HttpClient) {    this.loadInitialCount();
+  constructor(private http: HttpClient) { 
+    this.loadInitialCount();
   }
+
   private loadInitialCount(): void {
     this.http.get<Feedback[]>(`${this.apiUrl}?read=false`).subscribe({
-      next: (feedbacks) => this.feedbackCount.next(feedbacks.length),
+      next: (feedbacks) => {
+        this.unreadFeedbacks = feedbacks;
+        this.feedbackCount.next(feedbacks.length);
+      },
       error: (err) => console.error('Error loading feedback count', err)
     });
   }
 
   markAsRead(id: number): Observable<Feedback> {
     return this.http.patch<Feedback>(`${this.apiUrl}/${id}`, { read: true }).pipe(
-      tap(() => {
-        // Décrémente le compteur après marquage comme lu
-        this.feedbackCount.next(Math.max(0, this.feedbackCount.value - 1));
+      tap((updatedFeedback) => {
+        // Mettre à jour la liste des feedbacks non lus
+        this.unreadFeedbacks = this.unreadFeedbacks.filter(fb => fb.id !== id);
+        this.feedbackCount.next(this.unreadFeedbacks.length);
       })
     );
   }
-
 
   getFeedbacks(): Observable<Feedback[]> {
     return this.http.get<Feedback[]>(this.apiUrl);
   }
 
-  deleteFeedback(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  getUnreadFeedbacks(): Observable<Feedback[]> {
+    return this.http.get<Feedback[]>(`${this.apiUrl}?read=false`);
   }
 
-  respondToFeedback(email: string, response: string) {
-    // fakka: tna7i l code aw tzido ki t7eb tab3ath email etc.
-    console.log(`Responding to ${email}: ${response}`);
+  deleteFeedback(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        // Vérifier si le feedback supprimé était non lu
+        if (this.unreadFeedbacks.some(fb => fb.id === id)) {
+          this.unreadFeedbacks = this.unreadFeedbacks.filter(fb => fb.id !== id);
+          this.feedbackCount.next(this.unreadFeedbacks.length);
+        }
+      })
+    );
   }
-   // Méthodes pour le compteur
-   getFeedbackCount(): Observable<number> {
+
+  getFeedbackCount(): Observable<number> {
     return this.feedbackCount.asObservable();
   }
-
-  
 }

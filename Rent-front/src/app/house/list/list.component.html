@@ -78,9 +78,12 @@
         <td class="py-2 px-4 border-b">{{ house.description }}</td>
         <td class="py-2 px-4 border-b">
           <span *ngIf="house.user" class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
-            {{ house.user.firstName }} {{ house.user.lastName }}
+            {{ house.user.firstName }} {{ house.user.lastName }} (Utilisateur)
           </span>
-          <span *ngIf="!house.user" class="bg-gray-100 text-gray-800 text-sm px-2.5 py-0.5 rounded-sm">
+          <span *ngIf="house.lessor" class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
+            {{ house.lessor.firstName }} (Bailleur)
+          </span>
+          <span *ngIf="!house.user && !house.lessor" class="bg-gray-100 text-gray-800 text-sm px-2.5 py-0.5 rounded-sm">
             Disponible
           </span>
         </td>
@@ -147,49 +150,64 @@
   </div>
 
   <!-- Modal de détails -->
-  <div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 relative max-h-[90vh] overflow-y-auto">
-      <button (click)="isModalOpen = false" class="absolute top-2 right-2 text-red-600 hover:text-red-800 text-3xl font-bold">&times;</button>
-      <h2 class="text-2xl font-bold mb-4 text-center">{{ selectedHouse?.title }}</h2>
-      <div class="flex space-x-2 overflow-x-auto mb-4">
-        <img *ngFor="let img of selectedHouse?.pictures" [src]="img.url" class="w-32 h-32 object-cover rounded shadow border">
+<div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 relative max-h-[90vh] overflow-y-auto">
+    <button (click)="isModalOpen = false" class="absolute top-2 right-2 text-red-600 hover:text-red-800 text-3xl font-bold">&times;</button>
+    <h2 class="text-2xl font-bold mb-4 text-center">{{ selectedHouse?.title }}</h2>
+    <div class="flex space-x-2 overflow-x-auto mb-4">
+      <img *ngFor="let img of selectedHouse?.pictures" [src]="img.url" class="w-32 h-32 object-cover rounded shadow border">
+    </div>
+    <div class="flex flex-wrap gap-6 text--600 text-sm md:text-base">
+      <p><strong>📐 Surface (m²):</strong> {{ selectedHouse?.surface }}</p>
+      <p><strong>🛋️ Nombre de pièces:</strong> {{ selectedHouse?.rooms }}</p>
+      <p><strong>🛏️ Nombre de chambres:</strong> {{ selectedHouse?.bedrooms }}</p>
+      <p><strong>🛁 Nombre de salles de bain:</strong> {{ selectedHouse?.bathrooms }}</p>        
+      <p><strong>📝 Description:</strong> {{ selectedHouse?.description }}</p>
+      <p><strong>👤 Nom du bailleur/utilisateur:</strong> 
+        <span *ngIf="selectedHouse.user">{{ selectedHouse.user.firstName }} {{ selectedHouse.user.lastName }} (Utilisateur)</span>
+        <span *ngIf="selectedHouse.lessor">{{ selectedHouse.lessor.firstName }} (Bailleur)</span>
+        <span *ngIf="!selectedHouse.user && !selectedHouse.lessor">Non spécifié</span>
+      </p>     
+       <p><strong>🏷️ Type:</strong> {{ selectedHouse?.type }}</p>
+      <p><strong>💰 Prix:</strong> {{ selectedHouse?.price }} TND</p>
+      <p><strong>🏙️ Ville:</strong> {{ selectedHouse?.location }}</p>
+      <p><strong>📍 Adresse exacte:</strong> {{ selectedHouse?.city }}</p>
+      <p><strong>📮 Code Postal:</strong> {{ selectedHouse?.poste_code }}</p>
+    </div>
+    
+    <!-- Caractéristiques -->
+    <div class="w-full mt-6" *ngIf="selectedHouse?.characteristics?.length">
+      <h3 class="text-lg font-bold mb-2">🛠️ Caractéristiques:</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div *ngFor="let char of selectedHouse?.characteristics" class="flex items-center p-3 bg-gray-50 rounded-lg">
+          <img *ngIf="getCharacteristicImage(char.characteristicId)" 
+               [src]="getCharacteristicImage(char.characteristicId)" 
+               class="w-12 h-12 object-cover rounded-full mr-3 border">
+          <div>
+            <p class="font-semibold">{{ getCharacteristicName(char.characteristicId) }}</p>
+            <p class="text-sm text-gray-600">Quantité: {{ char.quantite }}</p>
+          </div>
+        </div>
       </div>
-      <div class="flex flex-wrap gap-6 text--600 text-sm md:text-base">
-        <p><strong>📐 Surface (m²):</strong> {{ selectedHouse?.surface }}</p>
-        <p><strong>🛋️ Nombre de pièces:</strong> {{ selectedHouse?.rooms }}</p>
-        <p><strong>🛏️ Nombre de chambres:</strong> {{ selectedHouse?.bedrooms }}</p>
-        <p><strong>🛁 Nombre de salles de bain:</strong> {{ selectedHouse?.bathrooms }}</p>        
-        <p><strong>📝 Description:</strong> {{ selectedHouse?.description }}</p>
-        <p><strong>👤 Nom du bailleur:</strong> {{ selectedHouse?.user?.firstName }} {{ selectedHouse?.user?.lastName }}</p>
-        <p><strong>🏷️ Type:</strong> {{ selectedHouse?.type }}</p>
-        <p><strong>💰 Prix:</strong> {{ selectedHouse?.price }} TND</p>
-        <p><strong>🏙️ Ville:</strong> {{ selectedHouse?.location }}</p>
-        <p><strong>📍 Adresse exacte:</strong> {{ selectedHouse?.city }}</p>
-        <p><strong>📮 Code Postal:</strong> {{ selectedHouse?.poste_code }}</p>
-      </div>
-      <!-- Caractéristiques -->
-      <div class="w-full mt-6">
-        <h3 class="text-lg font-bold mb-2">🛠️ <strong>Caractéristiques:</strong></h3>
-        <ul class="list-disc list-inside space-y-1">
-          <li *ngFor="let char of selectedHouse?.characteristics">
-            <strong>{{ getCharacteristicName(char.characteristicId) }}</strong> : {{ char.quantite }}
-          </li>
-        </ul>
-      </div>
+    </div>
 
-      <!-- Équipements -->
-      <div class="w-full mt-6">
-        <h3 class="text-lg font-bold mb-2">🏡 <strong>Équipements:</strong></h3>
-        <ul class="list-disc list-inside space-y-1">
-          <li *ngFor="let eq of selectedHouse?.Equipment">
-            <strong>{{ getEquipmentName(eq.equipementId) }}</strong> : {{ eq.quantite }}
-          </li>
-        </ul>
+    <!-- Équipements -->
+    <div class="w-full mt-6" *ngIf="selectedHouse?.Equipment?.length">
+      <h3 class="text-lg font-bold mb-2">🏡 Équipements:</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div *ngFor="let eq of selectedHouse?.Equipment" class="flex items-center p-3 bg-gray-50 rounded-lg">
+          <img *ngIf="getEquipmentImage(eq.equipementId)" 
+               [src]="getEquipmentImage(eq.equipementId)" 
+               class="w-12 h-12 object-cover rounded-full mr-3 border">
+          <div>
+            <p class="font-semibold">{{ getEquipmentName(eq.equipementId) }}</p>
+            <p class="text-sm text-gray-600">Quantité: {{ eq.quantite }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Composant de suppression -->
-  <app-delete *ngIf="close" [selectedList]="selectedhouses" (close)="actionClose()" (save)="actionSave()">
-  </app-delete>
 </div>
+
+<!-- Composant de suppression -->
+<app-delete *ngIf="close" [selectedList]="selectedhouses" (close)="actionClose()" (save)="actionSave()"></app-delete>

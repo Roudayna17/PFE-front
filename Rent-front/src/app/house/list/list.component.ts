@@ -59,6 +59,15 @@ export class ListComponent implements OnInit {
     });
   }
 
+  getCharacteristicImage(id: number): string | null {
+    const char = this.allCharacteristics?.find((c: any) => c.id === id);
+    return char?.image || null;
+  }
+  
+  getEquipmentImage(id: number): string | null {
+    const eq = this.allEquipments?.find((e: any) => e.id === id);
+    return eq?.image || null;
+  }
   loadCharacteristics() {
     this.caracteristiqueService.getCharacteristics().subscribe(data => {
       this.allCharacteristics = data;
@@ -95,28 +104,44 @@ export class ListComponent implements OnInit {
     this.router.navigate(['/offre/add-offre'], { queryParams: { houseId: houseId } });
   }
 
-  getCharacteristicName(id: number): string {
-    const char = this.allCharacteristics?.find((c: any) => c.id === id);
-    return char ? char.name : 'Caractéristique inconnue';
-  }
-  
-  getEquipmentName(id: number): string {
-    const eq = this.allEquipments?.find((e: any) => e.id === id);
-    return eq ? eq.name : 'Équipement inconnu';
-  }
-
-  viewDetails(house: any) {
-    this.houseService.getHouseById(house.id).subscribe(
-      (data) => {
-        this.selectedHouse = data;
-        console.log('✅ House details:', data);
-        this.isModalOpen = true;
-      },
-      (error) => {
-        console.error("❌ Erreur lors du chargement des détails de la maison", error);
+viewDetails(house: any) {
+  this.houseService.getHouseById(house.id).subscribe(
+    (data) => {
+      this.selectedHouse = data;
+      console.log(' House details:', data);
+      
+      if (this.selectedHouse.characteristics) {
+        this.selectedHouse.characteristics.forEach((char: any) => {
+          char.title = this.getCharacteristicName(char.caracteristiqueId);
+          char.image = this.getCharacteristicImage(char.caracteristiqueId);
+        });
       }
-    );
-  }
+      
+      if (this.selectedHouse.Equipment) {
+        this.selectedHouse.Equipment.forEach((eq: any) => {
+          eq.title = this.getEquipmentName(eq.equipementId);
+          eq.image = this.getEquipmentImage(eq.equipementId);
+        });
+      }
+      
+      this.isModalOpen = true;
+    },
+    (error) => {
+      console.error("Erreur lors du chargement des détails de la maison", error);
+    }
+  );
+}
+
+getCharacteristicName(id: number): string {
+  if (!this.allCharacteristics) return 'Chargement...';
+  const char = this.allCharacteristics.find((c: any) => c.id === id);
+  return char ? char.title : `Caractéristique #${id}`; // Utilisez 'title' au lieu de 'name'
+}
+
+getEquipmentName(id: number): string {
+  const eq = this.allEquipments?.find((e: any) => e.id === id);
+  return eq ? eq.title : 'Équipement inconnu'; 
+}
   
   actionClose() {
     this.close = false;
@@ -165,4 +190,5 @@ export class ListComponent implements OnInit {
       console.log('Modifier les immobiliers sélectionnés:', selectedIds);
     }
   }
+  
 }

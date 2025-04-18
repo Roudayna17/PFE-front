@@ -17,6 +17,7 @@ const routes: Routes = [{
   {path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)} ,
   {path: 'offre', loadChildren: () => import('./offre/offre.module').then(m => m.OffreModule)} ,
   {path: 'notification', loadChildren: () => import('./notification/notification.module').then(m => m.NotificationModule)} ,
+  {path: 'reservation', loadChildren: () => import('./reservation/reservation.module').then(m => m.ReservationModule)} 
 
 
 ];

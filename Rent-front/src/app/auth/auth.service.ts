@@ -8,20 +8,17 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export default class AuthService {
-  getUserEmail(): string {
-    throw new Error('Method not implemented.');
+export class AuthService {
+
+   private apiUrl = 'http://localhost:3000';
+
+
+  constructor(private http:HttpClient,private router: Router) {}
+  get currentUser(): User | null {
+    // Si vous stockez le user dans localStorage après le login
+    const userJson = localStorage.getItem('currentUser');
+    return userJson ? JSON.parse(userJson) : null;
   }
- 
-  private apiUrl = 'http://localhost:3000';
-
-
-  constructor(private http:HttpClient,private router: Router) { 
-
-    
-  }
-  
-
   
   loginUser(login:Login): Observable<any> {
     console.log("Données envoyées au backend:", login);
@@ -38,10 +35,21 @@ export default class AuthService {
   isLoggedIn(): boolean {
     return localStorage.getItem('token') !== null;
   }
+
+  // Nouvelle méthode pour demander une réinitialisation
+  requestPasswordReset(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  // Nouvelle méthode pour soumettre un nouveau mot de passe
+  resetPassword(email: string, token: string, newPassword: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, {
+      email,
+      token,
+      newPassword
+    });
+  }
 }
-
-
-
 
 export function tokenGetter(platformId: object): string {
   if (!isPlatformBrowser(platformId)) {
