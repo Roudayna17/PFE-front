@@ -37,7 +37,6 @@ export class UpdateOffreComponent implements OnInit {
       houseId: [''],
       created_at: [formattedDate], // Initialisation auto
       time: [formattedTime], // Initialisation auto
-      location: ['', Validators.required],
       priceHT: [0, Validators.required],
       tva: [this.tva, Validators.required],
       priceTTC: [{ value: 0, disabled: true }],
@@ -61,7 +60,6 @@ export class UpdateOffreComponent implements OnInit {
           description: data.description,
           availability:data.availability,
           houseId: data.houseId,
-          location: data.location,
           priceHT: data.priceHT,
           tva: data.tva,
           priceTTC: data.priceTTC
@@ -115,7 +113,6 @@ export class UpdateOffreComponent implements OnInit {
         created_at: this.getTodayDate(),
         time: this.getCurrentTime(),
         houseId: Number(this.offreForm.value.houseId),
-        location: this.offreForm.value.location,
         priceHT: this.offreForm.value.priceHT,
         tva: this.offreForm.value.tva,
         priceTTC: this.offreForm.value.priceTTC,

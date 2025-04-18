@@ -1,30 +1,395 @@
-<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
-      Bienvenue sur le Tableau de Bord
-    </h1>
-    <p class="mt-2 text-gray-600 dark:text-gray-400">
-      Gérez vos locations, utilisateurs et propriétés en toute simplicité.
-    </p>
-  
-    <!-- Exemple de cartes de statistiques -->
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
-        <h2 class="text-lg font-semibold text-blue-800 dark:text-blue-200">
-          Locations Actives
-        </h2>
-        <p class="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-300">42</p>
+<div class="p-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Tableau de Bord Administratif</h1>
+    <button (click)="loadData()" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Actualiser
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading">
+    <!-- Global Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      <!-- Houses Card -->
+      <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500">Biens Immobiliers</p>
+            <h3 class="text-2xl font-bold">{{stats.global?.houses || 0}}</h3>
+          </div>
+        </div>
       </div>
-      <div class="p-4 bg-green-50 dark:bg-green-900 rounded-lg">
-        <h2 class="text-lg font-semibold text-green-800 dark:text-green-200">
-          Utilisateurs Inscrits
-        </h2>
-        <p class="mt-2 text-3xl font-bold text-green-600 dark:text-green-300">120</p>
+
+      <!-- Offers Card -->
+      <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500">Offres</p>
+            <h3 class="text-2xl font-bold">{{stats.global?.offers || 0}}</h3>
+          </div>
+        </div>
       </div>
-      <div class="p-4 bg-purple-50 dark:bg-purple-900 rounded-lg">
-        <h2 class="text-lg font-semibold text-purple-800 dark:text-purple-200">
-          Revenus Totaux
-        </h2>
-        <p class="mt-2 text-3xl font-bold text-purple-600 dark:text-purple-300">$12,345</p>
+
+      <!-- Lessors Card -->
+      <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500">Bailleurs</p>
+            <h3 class="text-2xl font-bold">{{stats.global?.lessors || 0}}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clients Card -->
+      <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500">Clients</p>
+            <h3 class="text-2xl font-bold">{{stats.global?.clients || 0}}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reservations Card -->
+      <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500">Réservations</p>
+            <h3 class="text-2xl font-bold">{{stats.global?.reservations || 0}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Recent Reservations -->
+      <div class="lg:col-span-2 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-800">Dernières Réservations</h2>
+            <span class="text-sm text-gray-500">Taux d'acceptation: {{stats.reservations?.acceptanceRate | number:'1.1-1'}}%</span>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Offre</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let reservation of stats.reservations?.recentReservations" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{reservation.id}}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{reservation.createdAt | date:'dd/MM/yyyy HH:mm'}}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
+                        [ngClass]="{
+                          'bg-green-100 text-green-800': reservation.status === true,
+                          'bg-yellow-100 text-yellow-800': reservation.status === null,
+                          'bg-red-100 text-red-800': reservation.status === false
+                        }">
+                    {{reservation.status === true ? 'Confirmé' : (reservation.status === false ? 'Annulé' : 'En attente')}}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{reservation.client?.firstName || 'Inconnu'}}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{reservation.offre?.title || 'N/A'}}
+                </td>
+              </tr>
+              <tr *ngIf="!stats.reservations?.recentReservations?.length">
+                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Aucune réservation récente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Offer Highlights -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-800">Points Forts des Offres</h2>
+        </div>
+        <div class="p-6">
+          <div class="space-y-6">
+            <!-- Last Offer -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Dernière Offre</h3>
+              <div *ngIf="stats.offers?.lastOffer" class="bg-blue-50 p-3 rounded-lg">
+                <p class="font-medium">{{stats.offers.lastOffer.title}}</p>
+                <p class="text-sm text-gray-600">{{formatDate(stats.offers.lastOffer.created_at)}}</p>
+                <p class="text-sm">{{formatCurrency(stats.offers.lastOffer.priceTTC)}}</p>
+              </div>
+              <p *ngIf="!stats.offers?.lastOffer" class="text-sm text-gray-500">Aucune offre</p>
+            </div>
+
+            <!-- Most Commented -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Plus Commentée</h3>
+              <div *ngIf="stats.offers?.mostCommentedOffer" class="bg-green-50 p-3 rounded-lg">
+                <p class="font-medium">{{stats.offers.mostCommentedOffer.title}}</p>
+                <p class="text-sm text-gray-600">{{stats.offers.mostCommentedOffer.commentCount || 0}} commentaires</p>
+              </div>
+              <p *ngIf="!stats.offers?.mostCommentedOffer" class="text-sm text-gray-500">Aucune donnée</p>
+            </div>
+
+            <!-- Most Reserved -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Plus Réservée</h3>
+              <div *ngIf="stats.offers?.mostReservedOffer" class="bg-purple-50 p-3 rounded-lg">
+                <p class="font-medium">{{stats.offers.mostReservedOffer.title}}</p>
+                <p class="text-sm text-gray-600">{{stats.offers.mostReservedOffer.reservationCount || 0}} réservations</p>
+              </div>
+              <p *ngIf="!stats.offers?.mostReservedOffer" class="text-sm text-gray-500">Aucune donnée</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Top Lessors -->
+      <div class="lg:col-span-2 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-800">Top Bailleurs</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biens</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Offres</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let lessor of stats.lessors?.topLessors" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                      <span class="text-gray-600">{{lessor.lessorName?.charAt(0) || '?'}}</span>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{lessor.lessorName || 'Non renseigné'}}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{lessor.houseCount }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{lessor.offerCount }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="w-full mr-2">
+                      <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" 
+                             [style.width.%]="(lessor.acceptedReservations / lessor.reservationCount * 100) || 0"></div>
+                      </div>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">{{(lessor.acceptedReservations / lessor.reservationCount * 100 || 0).toFixed(1)}}%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!stats.lessors?.topLessors?.length">
+                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Aucun bailleur trouvé</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- House Types -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-800">Types de Biens</h2>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div *ngFor="let type of stats.houses?.houseTypeStats" class="mb-4">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">{{type.type || 'Non spécifié'}}</span>
+                <span class="text-sm text-gray-500">{{type.count}} ({{(type.count / stats.global.houses * 100).toFixed(0)}}%)</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="h-2.5 rounded-full bg-blue-500" 
+                     [style.width.%]="(type.count / stats.global.houses * 100) || 0"></div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                Prix moyen: {{formatCurrency(type.averagePrice)}}
+              </div>
+            </div>
+            <div *ngIf="!stats.houses?.houseTypeStats?.length">
+              <p class="text-sm text-gray-500 text-center">Aucune donnée disponible</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Price Statistics -->
+      <!-- Price Statistics -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-semibold text-gray-800">Statistiques de Prix</h2>
+  </div>
+  <div class="p-6">
+    <div class="grid grid-cols-3 gap-4">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <p class="text-sm text-gray-500">Moyenne</p>
+        <p class="text-xl font-bold">
+          {{stats.offers?.priceStats?.averagePrice ? formatCurrency(stats.offers.priceStats.averagePrice) : 'N/A'}}
+        </p>
+      </div>
+      <div class="bg-green-50 p-4 rounded-lg">
+        <p class="text-sm text-gray-500">Minimum</p>
+        <p class="text-xl font-bold">
+          {{stats.offers?.priceStats?.minPrice ? formatCurrency(stats.offers.priceStats.minPrice) : 'N/A'}}
+        </p>
+      </div>
+      <div class="bg-purple-50 p-4 rounded-lg">
+        <p class="text-sm text-gray-500">Maximum</p>
+        <p class="text-xl font-bold">
+          {{stats.offers?.priceStats?.maxPrice ? formatCurrency(stats.offers.priceStats.maxPrice) : 'N/A'}}
+        </p>
       </div>
     </div>
   </div>
+</div>
+
+      <!-- Client Activity -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-800">Activité des Clients</h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-3 gap-4">
+            <div class="bg-indigo-50 p-4 rounded-lg">
+              <p class="text-sm text-gray-500">Total</p>
+              <p class="text-xl font-bold">{{stats.clients?.totalClients || 0}}</p>
+            </div>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="text-sm text-gray-500">Réservations</p>
+              <p class="text-xl font-bold">{{stats.clients?.activityMetrics?.totalReservations || 0}}</p>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+              <p class="text-sm text-gray-500">Moyenne/Client</p>
+              <p class="text-xl font-bold">{{stats.clients?.activityMetrics?.avgReservationsPerClient}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trends Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Registration Trends -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-800">Nouveaux Clients (12 mois)</h2>
+        </div>
+        <div class="p-6">
+          <div *ngIf="stats.clients?.registrationTrends?.length > 0; else noTrendsData">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mois</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nouveaux Clients</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let trend of stats.clients.registrationTrends" class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ trend.formattedMonth }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ trend.newClients }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #noTrendsData>
+            <div class="text-center py-4 text-gray-500">
+              Aucune donnée disponible sur les tendances d'inscription
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+
+      <!-- Offer Trends -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-800">Nouvelles Offres (12 mois)</h2>
+        </div>
+        <div class="p-6">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mois</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nouvelles</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let trend of stats.offers?.monthlyTrends" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatMonth(trend.month)}}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{trend.count}}</td>
+              </tr>
+              <tr *ngIf="!stats.offers?.monthlyTrends?.length">
+                <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500">Aucune donnée disponible</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

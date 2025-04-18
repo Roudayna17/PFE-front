@@ -1,41 +1,57 @@
 <div class="p-5 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
   <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
-    <h2 class="text-lg font-semibold text-gray-800 mb-4">Informations concernant l'Immobilier:</h2>
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Informations concernant l'Immobilier:</h2>
 
     <!-- Titre -->
     <div class="mb-4">
-      <label for="title" class="block text-sm font-medium text-gray-900">Titre d'Immobilier:</label>
-      <input id="title" type="text" formControlName="title" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <label for="title" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Titre d'Immobilier:</label>
+      <input id="title" type="text" formControlName="title"
+             class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
 
     <!-- Description -->
     <div class="mb-4">
-      <label for="description" class="block text-sm font-medium text-gray-900">Description:</label>
-      <textarea id="description" formControlName="description" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+      <label for="description" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Description:</label>
+      <textarea id="description" formControlName="description"
+                class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
     </div>
 
     <!-- Localisation -->
     <div class="mb-4">
-      <label for="location" class="block text-sm font-medium text-gray-900">Ville:</label>
-      <input id="location" type="text" formControlName="location" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
-    </div>
+      <label class="block text-sm font-medium text-gray-900 dark:text-gray-300 mb-2">Localisation:</label>
 
-    <!-- Ville -->
-    <div class="mb-4">
-      <label for="city" class="block text-sm font-medium text-gray-900">Adresse exacte:</label>
-      <input id="city" type="text" formControlName="city" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <div class="map-container relative h-72 rounded overflow-hidden">
+        <div id="map" class="w-full h-full rounded"></div>
+        <button type="button" class="locate-btn absolute bottom-4 right-4 bg-blue-600 text-white p-2 rounded-full shadow" (click)="locateUser()" title="Me localiser">
+          <i class="fas fa-location-arrow"></i>
+        </button>
+      </div>
+
+      <div class="mt-2 p-2 border dark:bg-gray-700 dark:text-gray-300 rounded">
+        <p><strong>Adresse:</strong> {{ selectedAddress || "Cliquez sur la carte pour sélectionner une adresse" }}</p>
+        <p><strong>Coordonnées:</strong>
+          {{ houseForm.get('latitude')?.value ? (houseForm.get('latitude')?.value | number:'1.4-4') + ', ' + (houseForm.get('longitude')?.value | number:'1.4-4') : 'Non sélectionnées' }}
+        </p>
+      </div>
+
+      <input type="hidden" formControlName="latitude">
+      <input type="hidden" formControlName="longitude">
+      <input type="hidden" formControlName="location"> 
+
     </div>
 
     <!-- Code postal -->
     <div class="mb-4">
-      <label for="poste_code" class="block text-sm font-medium text-gray-900">Code Postal:</label>
-      <input id="poste_code" type="text" formControlName="poste_code" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <label for="poste_code" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Code Postal:</label>
+      <input id="poste_code" type="text" formControlName="poste_code"
+             class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
 
-    <!-- Type de logement -->
+    <!-- Type -->
     <div class="mb-4">
-      <label for="type" class="block text-sm font-medium text-gray-900">Type d'Immobilier:</label>
-      <select id="type" formControlName="type" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <label for="type" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Type d'Immobilier:</label>
+      <select id="type" formControlName="type"
+              class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
         <option value="appartement">Appartement</option>
         <option value="maison">Maison</option>
         <option value="villa">Villa</option>
@@ -43,47 +59,50 @@
       </select>
     </div>
 
-    <!-- Surface -->
-    <div class="mb-4">
-      <label for="surface" class="block text-sm font-medium text-gray-900">Surface (m²):</label>
-      <input id="surface" type="number" formControlName="surface" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
-    </div>
+    <!-- Surface, pièces, chambres, salles de bain -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="mb-4">
+        <label for="surface" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Surface (m²):</label>
+        <input id="surface" type="number" formControlName="surface"
+               class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
 
-    <!-- Nombre de pièces -->
-    <div class="mb-4">
-      <label for="rooms" class="block text-sm font-medium text-gray-900">Nombre de pièces:</label>
-      <input id="rooms" type="number" formControlName="rooms" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
-    </div>
+      <div class="mb-4">
+        <label for="rooms" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Nombre de pièces:</label>
+        <input id="rooms" type="number" formControlName="rooms"
+               class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
 
-    <!-- Nombre de chambres -->
-    <div class="mb-4">
-      <label for="bedrooms" class="block text-sm font-medium text-gray-900">Nombre de chambres:</label>
-      <input id="bedrooms" type="number" formControlName="bedrooms" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
-    </div>
+      <div class="mb-4">
+        <label for="bedrooms" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Nombre de chambres:</label>
+        <input id="bedrooms" type="number" formControlName="bedrooms"
+               class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
 
-    <!-- Nombre de salles de bain -->
-    <div class="mb-4">
-      <label for="bathrooms" class="block text-sm font-medium text-gray-900">Nombre de salles de bain:</label>
-      <input id="bathrooms" type="number" formControlName="bathrooms" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <div class="mb-4">
+        <label for="bathrooms" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Nombre de salles de bain:</label>
+        <input id="bathrooms" type="number" formControlName="bathrooms"
+               class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      </div>
     </div>
 
     <!-- Prix -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700">Prix</label>
-      <input type="text" formControlName="price" [disabled]="true" class="w-full p-2 border rounded-lg bg-gray-100">
-      <div *ngIf="houseForm.get('price')?.invalid && houseForm.get('price')?.touched" class="text-red-600 text-sm">
-        Ce champ est obligatoire.
-      </div>
+      <label for="price" class="block text-sm font-medium text-gray-900 dark:text-gray-300">Prix:</label>
+      <input id="price" type="number" formControlName="price"
+             class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
     </div>
 
     <!-- Caractéristiques -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-900">Caractéristiques:</label>
+      <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Caractéristiques:</label>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         <div *ngFor="let characteristic of characteristics" class="flex items-center">
-          <input type="checkbox" [value]="characteristic.id" (change)="onSelectCharacteristic($event, characteristic)" class="mr-2">
-          <label>{{ characteristic.title }}</label>
-          <input type="number" min="1" [value]="characteristic.quantite" (input)="onQuantityChange('characteristic', characteristic.id, $event)" class="ml-2 w-16 text-center border rounded">
+          <input type="checkbox" [value]="characteristic.id" (change)="onSelectCharacteristic($event, characteristic)"
+                 class="mr-2 dark:bg-gray-700 dark:border-gray-600">
+          <label class="dark:text-gray-300">{{ characteristic.title }}</label>
+          <input type="number" min="1" [value]="characteristic.quantite" (input)="onQuantityChange('characteristic', characteristic.id, $event)"
+                 class="ml-2 w-16 text-center border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
           <img [src]="characteristic.image" alt="{{ characteristic.title }}" class="w-10 h-10 ml-2">
         </div>
       </div>
@@ -91,12 +110,14 @@
 
     <!-- Équipements -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-900">Équipements:</label>
+      <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Équipements:</label>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         <div *ngFor="let equipment of equipements" class="flex items-center">
-          <input type="checkbox" [value]="equipment.id" (change)="onSelectEquipement($event, equipment)" class="mr-2">
-          <label>{{ equipment.title }}</label>
-          <input type="number" min="1" [value]="equipment.quantite" (input)="onQuantityChange('equipement', equipment.id, $event)" class="ml-2 w-16 text-center border rounded">
+          <input type="checkbox" [value]="equipment.id" (change)="onSelectEquipement($event, equipment)"
+                 class="mr-2 dark:bg-gray-700 dark:border-gray-600">
+          <label class="dark:text-gray-300">{{ equipment.title }}</label>
+          <input type="number" min="1" [value]="equipment.quantite" (input)="onQuantityChange('equipement', equipment.id, $event)"
+                 class="ml-2 w-16 text-center border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
           <img [src]="equipment.image" alt="{{ equipment.title }}" class="w-10 h-10 ml-2">
         </div>
       </div>
@@ -104,15 +125,16 @@
 
     <!-- Images -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-900">Images:</label>
-      <input type="file" (change)="picked($event)" class="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500" multiple>
+      <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Images:</label>
+      <input type="file" (change)="picked($event)" multiple accept="image/*"
+             class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
 
       <div class="flex space-x-4 mt-2 overflow-x-auto">
         <div *ngFor="let item of pictureArray; let i = index" class="flex-shrink-0">
           <div class="relative">
             <img [src]="item.url" alt="Image {{ i + 1 }}" class="w-32 h-32 object-cover rounded-lg shadow-md">
             <button type="button" class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-700" (click)="deletePic(item)">
-              <i class="fa fa-trash"></i>
+              <i class="fas fa-trash"></i>
             </button>
             <span *ngIf="item.defaults" class="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
               Principale
@@ -122,9 +144,9 @@
       </div>
     </div>
 
-    <!-- Bouton de soumission -->
+    <!-- Bouton -->
     <div class="mt-5 flex justify-end">
-      <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded">
+      <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
         Ajouter
       </button>
     </div>

@@ -9,12 +9,15 @@ import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotificationComponent } from './notification/notification.component';
+import { ReservationComponent } from './reservation/reservation.component';
+import { ReservationModule } from './reservation/reservation.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     NotificationComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -25,6 +28,7 @@ import { NotificationComponent } from './notification/notification.component';
     AuthModule,
     RouterModule,
     HttpClientModule,
+    ReservationModule,
   ],
   providers: [
     provideHttpClient(withFetch()), // Activation de fetch

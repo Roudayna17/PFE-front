@@ -60,11 +60,4 @@ export class NotificationComponent implements OnInit {
       });
     }
   }
-  respond(feedback: Feedback) {
-    const reply = prompt(`Réponse pour ${feedback.email}:`);
-    if (reply) {
-      this.notificationService.respondToFeedback(feedback.email || '', reply);
-      alert('Réponse envoyée !');
-    }
-  }
 }

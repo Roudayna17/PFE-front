@@ -16,26 +16,25 @@ constructor(private router:Router,
   @Inject(PLATFORM_ID) private platformId: object
 )
 {}
-  ngOnInit() {
-    if (typeof window !== 'undefined') {
-          initFlowbite();
-      }
-      document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-      localStorage.removeItem('csrftoken');
-      console.log("tokennnn", tokenGetter(this.platformId));  // Log the token with platformId passed
-      if (tokenGetter(this.platformId).length == 0) {  // Check the token length using platformId
-        this.router.navigate(['/auth/login']);
-      }
-      
+ngOnInit() {
+  if (isPlatformBrowser(this.platformId)) {
+    // Tout ce qui dépend du navigateur
+    initFlowbite();
+    document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    localStorage.removeItem('csrftoken');
+
+    const token = tokenGetter(this.platformId);
+    console.log("tokennnn", token);
+
+    if (token.length === 0) {
+      this.router.navigate(['/auth/login']);
+    }
+
     this.router.events.subscribe((event: any) => {
       if (event.url) {
-        if (event.url === '/auth/login')
-    {
-          this.showMenu = false;
-        } else {
-          this.showMenu = true;
-        }
+        this.showMenu = event.url !== '/auth/login';
       }
     });
   }
+}
 }

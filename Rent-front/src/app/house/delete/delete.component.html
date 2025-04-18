@@ -1,6 +1,7 @@
-<div *ngIf="selectedList.length > 0" class="container"> 
+<div class="container"> 
     <div id="deleteModal" tabindex="-1" aria-hidden="true" 
-         class="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
+         class="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50"
+         *ngIf="selectedList.length > 0">
         
         <div class="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-800">
             <!-- Modal content -->
@@ -27,7 +28,7 @@
   
                 <!-- Confirmation Message -->
                 <p class="mb-4 text-gray-500 dark:text-gray-300">
-                    Voulez-vous vraiment supprimer la(les) maison(s) séléctionée(s) ?
+                    Voulez-vous vraiment supprimer la(les) maison(s) sélectionnée(s) ?
                     <span *ngFor="let house of selectedList; let isLast = last"> 
                       {{ house.id }}<span *ngIf="!isLast">, </span>
                     </span> ?
@@ -42,7 +43,7 @@
                             dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                         Annuler
                     </button>
-                    <button type="submit" (click)="deletelist()" 
+                    <button type="button" (click)="deletelist($event)" 
                             [disabled]="selectedList.length === 0"
                             class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg 
                             hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 
@@ -53,4 +54,4 @@
             </div>
         </div>
     </div>
-</div>
+  </div>
