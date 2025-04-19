@@ -54,5 +54,18 @@ export class ReservationService {
   getReservationAnalytics(): Observable<any> {
     return this.http.get(`${this.apiUrl}/analytics/statistics`);
   }
-  
+
+  acceptReservation(id: number, message?: string): Observable<Reservation> {
+    return this.http.patch<Reservation>(`${this.apiUrl}/${id}/accept`, { message });
+  }
+
+  rejectReservation(id: number, message?: string): Observable<Reservation> {
+    return this.http.delete<Reservation>(`${this.apiUrl}/${id}/reject`, {
+      body: { message }
+    });
+  }
+
+  getReservationsByUser(userId: number): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userId}`);
+  }
 }

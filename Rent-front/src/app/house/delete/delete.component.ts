@@ -17,11 +17,10 @@ export class DeleteComponent {
   closedEvent() {
     this.close.emit(true);
   }
-
   deletelist(event: Event) {
     event.stopPropagation();
     event.preventDefault();
-
+  
     if (this.selectedList.length === 0) {
       Swal.fire({
         title: 'Erreur',
@@ -31,41 +30,38 @@ export class DeleteComponent {
       });
       return;
     }
-
+  
     const houseIds = this.selectedList.map(house => house.id);
     
     Swal.fire({
       title: 'Confirmer la suppression',
-      html: `Êtes-vous sûr de vouloir supprimer <strong>${this.selectedList.length}</strong> logement(s) et toutes leurs données associées (photos, offres, etc.) ?`,
+      html: `Êtes-vous sûr de vouloir supprimer <strong>${this.selectedList.length}</strong> logement(s) ?<br>
+             <small class="text-red-500">Cette action est irréversible et supprimera toutes les données associées.</small>`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Oui, supprimer!',
-      cancelButtonText: 'Annuler'
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer définitivement',
+      cancelButtonText: 'Annuler',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return this.houseService.deleteMultiple(houseIds).toPromise()
+          .catch(error => {
+            Swal.showValidationMessage(
+              `Échec de la suppression: ${error.error?.message || error.message}`
+            );
+          });
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.houseService.deleteMultiple(houseIds).subscribe(
-          (response: any) => {
-            Swal.fire({
-              title: 'Succès!',
-              text: 'Les logements et toutes leurs données associées ont été supprimés avec succès.',
-              icon: 'success',
-              confirmButtonText: 'OK'
-            });
-            this.save.emit(true);
-          },
-          (error) => {
-            Swal.fire({
-              title: 'Erreur',
-              text: 'Une erreur est survenue lors de la suppression',
-              icon: 'error',
-              confirmButtonText: 'OK'
-            });
-            console.error('Échec de la suppression', error);
-          }
-        );
+        Swal.fire({
+          title: 'Suppression réussie!',
+          text: `${result.value?.deletedCount || this.selectedList.length} logement(s) supprimé(s) avec succès.`,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        this.save.emit(true);
       }
     });
   }
-}
+  }

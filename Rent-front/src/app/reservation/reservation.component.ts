@@ -12,8 +12,10 @@ export class ReservationComponent implements OnInit {
   filteredReservations: Reservation[] = [];
   isLoading = true;
   currentFilter = 'all';
+  currentUserId: number | null = null;
+  rejectionMessage: string = '';
+  selectedReservationId: number | null = null;
 
-  // Calcul des totaux sur la liste des réservations
   get acceptedCount(): number {
     return this.reservations.filter(r => r.status && !r.isRejected).length;
   }
@@ -32,23 +34,50 @@ export class ReservationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadReservations();
+    this.loadCurrentUser();
+  }
+
+  loadCurrentUser(): void {
+    if (this.authService.currentUser$) {
+      this.authService.currentUser$.subscribe((user: any) => {
+        this.currentUserId = user?.id || null;
+        this.loadReservations();
+      });
+    }
   }
 
   loadReservations(): void {
     this.isLoading = true;
     
-    this.reservationService.getAllReservations().subscribe({
-      next: (reservations) => {
-        this.reservations = reservations;
-        this.filteredReservations = [...reservations];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des réservations:', err);
-        this.isLoading = false;
-      }
-    });
+    if (this.currentUserId) {
+      this.reservationService.getReservationsByUser(this.currentUserId).subscribe({
+        next: (reservations) => {
+          this.reservations = reservations;
+          this.filteredReservations = [...reservations];
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des réservations:', err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.reservationService.getAllReservations().subscribe({
+        next: (reservations) => {
+          this.reservations = reservations;
+          this.filteredReservations = [...reservations];
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des réservations:', err);
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  canManageReservation(reservation: Reservation): boolean {
+    return reservation.offre?.house?.user?.id !== undefined;
   }
 
   filterReservations(filter: string): void {
@@ -68,6 +97,50 @@ export class ReservationComponent implements OnInit {
         break;
       default:
         this.filteredReservations = [...this.reservations];
+    }
+  }
+
+  acceptReservation(id: number): void {
+    this.reservationService.acceptReservation(id).subscribe({
+      next: (updatedReservation) => {
+        this.updateReservationInList(updatedReservation);
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'acceptation de la réservation:', err);
+      }
+    });
+  }
+
+  prepareReject(reservationId: number): void {
+    this.selectedReservationId = reservationId;
+    this.rejectionMessage = '';
+  }
+
+  rejectReservation(): void {
+    if (!this.selectedReservationId) return;
+    
+    this.reservationService.rejectReservation(this.selectedReservationId, this.rejectionMessage).subscribe({
+      next: (updatedReservation) => {
+        this.updateReservationInList(updatedReservation);
+        this.selectedReservationId = null;
+        this.rejectionMessage = '';
+      },
+      error: (err) => {
+        console.error('Erreur lors du rejet de la réservation:', err);
+      }
+    });
+  }
+
+  cancelReject(): void {
+    this.selectedReservationId = null;
+    this.rejectionMessage = '';
+  }
+
+  private updateReservationInList(updatedReservation: Reservation): void {
+    const index = this.reservations.findIndex(r => r.id === updatedReservation.id);
+    if (index !== -1) {
+      this.reservations[index] = updatedReservation;
+      this.filterReservations(this.currentFilter);
     }
   }
 }

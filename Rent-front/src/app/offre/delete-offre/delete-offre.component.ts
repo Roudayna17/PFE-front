@@ -36,39 +36,33 @@ export class DeleteOffreComponent {
     
     Swal.fire({
       title: 'Confirmer la suppression',
-      html: `Êtes-vous sûr de vouloir supprimer <strong>${this.selectedList.length}</strong> offre(s) ?`,
+      html: `Êtes-vous sûr de vouloir supprimer <strong>${this.selectedList.length}</strong> offre(s) ?<br>
+             <small class="text-red-500">Cette action supprimera aussi toutes les réservations et commentaires associés.</small>`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Oui, supprimer!',
-      cancelButtonText: 'Annuler'
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer définitivement',
+      cancelButtonText: 'Annuler',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return this.offreService.deleteMultiple(offreIds).toPromise()
+          .catch(error => {
+            Swal.showValidationMessage(
+              `Échec de la suppression: ${error.error?.message || error.message}`
+            );
+          });
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.offreService.deleteMultiple(offreIds).subscribe(
-          (response: any) => {
-            Swal.fire({
-              title: 'Succès!',
-              text: 'Les offres ont été supprimées avec succès.',
-              icon: 'success',
-              confirmButtonText: 'OK'
-            });
-            this.save.emit(true);
-          },
-          (error) => {
-            let errorMessage = 'Une erreur est survenue lors de la suppression';
-            if (error.error && error.error.message) {
-              errorMessage = error.error.message;
-            }
-            Swal.fire({
-              title: 'Erreur',
-              text: errorMessage,
-              icon: 'error',
-              confirmButtonText: 'OK'
-            });
-            console.error('Échec de la suppression', error);
-          }
-        );
+        Swal.fire({
+          title: 'Suppression réussie!',
+          text: `${result.value?.deletedCount || this.selectedList.length} offre(s) supprimée(s) avec succès.`,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        this.save.emit(true);
       }
     });
-  }}
+  }
+}
