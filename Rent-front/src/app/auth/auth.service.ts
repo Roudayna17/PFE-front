@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Login, User } from './auth';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -11,13 +11,23 @@ import { Router } from '@angular/router';
 export class AuthService {
 
    private apiUrl = 'http://localhost:3000';
+   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
 
-  constructor(private http:HttpClient,private router: Router) {}
-  get currentUser(): User | null {
-    // Si vous stockez le user dans localStorage après le login
+   constructor(private http: HttpClient, private router: Router) {
+    // Initialize with user from localStorage if exists
     const userJson = localStorage.getItem('currentUser');
-    return userJson ? JSON.parse(userJson) : null;
+    if (userJson) {
+      this.currentUserSubject.next(JSON.parse(userJson));
+    }
+  }
+
+  get currentUser$(): Observable<User | null> {
+    return this.currentUserSubject.asObservable();
+  }
+
+  get currentUserValue(): User | null {
+    return this.currentUserSubject.value;
   }
   
   loginUser(login:Login): Observable<any> {
@@ -25,31 +35,28 @@ export class AuthService {
 
     return this.http.post<any>(this.apiUrl+'/auth/login-user',login)as Observable<[User[]]>;
   }
-  // Fonction de déconnexion
+
   logout(): void {
-    localStorage.removeItem('token'); // Supprime le token
-    this.router.navigate(['/auth/login']); // Redirige vers la page de connexion
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    this.router.navigate(['/auth/login']);
   }
 
-  // Vérifier si l'utilisateur est connecté
   isLoggedIn(): boolean {
     return localStorage.getItem('token') !== null;
   }
 
-  // Nouvelle méthode pour demander une réinitialisation
   requestPasswordReset(email: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/auth/forgot-password`, { email });
   }
 
-  // Nouvelle méthode pour soumettre un nouveau mot de passe
   resetPassword(email: string, token: string, newPassword: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, {
       email,
       token,
       newPassword
     });
-  }
-}
+  }}
 
 export function tokenGetter(platformId: object): string {
   if (!isPlatformBrowser(platformId)) {

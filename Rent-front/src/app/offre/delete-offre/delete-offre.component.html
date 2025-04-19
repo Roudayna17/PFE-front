@@ -28,10 +28,19 @@
   
                 <!-- Confirmation Message -->
                 <p class="mb-4 text-gray-500 dark:text-gray-300">
-                    Voulez-vous vraiment supprimer la(les) offre(s) sélectionnée(s) ?
-                    <span *ngFor="let offre of selectedList; let isLast = last"> 
-                      {{ offre.id }}<span *ngIf="!isLast">, </span>
-                    </span> ?
+                    Vous êtes sur le point de supprimer {{selectedList.length}} offre(s):
+                </p>
+                
+                <div class="mb-4 max-h-40 overflow-y-auto text-left">
+                    <ul class="list-disc list-inside">
+                        <li *ngFor="let offre of selectedList" class="text-gray-700 dark:text-gray-300">
+                            {{offre.title || 'Offre sans nom'}} (ID: {{offre.id}})
+                        </li>
+                    </ul>
+                </div>
+                
+                <p class="text-sm text-red-500 dark:text-red-400 mb-4">
+                    Attention: Cette action supprimera aussi toutes les réservations et commentaires associés.
                 </p>
   
                 <!-- Action Buttons -->
@@ -44,11 +53,10 @@
                         Annuler
                     </button>
                     <button type="button" (click)="deletelist($event)" 
-                            [disabled]="selectedList.length === 0"
                             class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg 
                             hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 
                             dark:hover:bg-red-600 dark:focus:ring-red-900">
-                        Confirmer
+                        Confirmer la suppression
                     </button>
                 </div>
             </div>
